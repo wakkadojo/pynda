@@ -1,0 +1,45 @@
+#ifndef BODY_H
+#define BODY_H
+
+#include "constants.h"
+#include "linalg.h"
+
+struct sphere
+{
+	double m;    // mass
+	double r;    // radius
+	double I;    // moment of inertia
+	vec3d x;     // sphere position
+	vec3d q;     // sphere orientation
+	vec3d v;     // sphere velocity
+	vec3d w;     // rotational velocity
+	bool moving; // is the sphere moving or static
+	// TODO: stress tensor
+	private:
+		void init (double, double, double, vec3d, vec3d, vec3d);
+	public:
+		sphere ();
+		sphere (double, double, vec3d, vec3d);
+		sphere (double, double, double, vec3d, vec3d, vec3d);
+};
+
+struct body_interact_data
+{
+	int i, j;       // labels of the two interacting spheres
+	vec3d f;        // impulse
+	vec3d n;		// the normal vector, needed for torques (n*r1, etc)
+	vec3d dxi, dxj; // COM offsets
+};
+
+// contains sphere interactions
+// TODO: function pointers and custom interaction functions (sticking)
+class body_interactor
+{
+	double mu, cor; // friction and coefficient of restitution
+	public:
+		// TODO: include stuck grains (m -> infinity etc)
+		body_interactor (double, double);
+		body_interact_data interact (int, int, sphere *, int);
+};
+
+#endif // BODY_H
