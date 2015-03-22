@@ -5,27 +5,22 @@
 
 grid::grid ()
 {
-    // just set everything to 0
-    n_cells = 0;
-    for (unsigned int i=0; i<d; ++i)
-    {
-        c[i] = 0;
-        box[i] = 0.0;
-    }
+    // just set everything to something trivial
+    c = { 1, 1, 1 };
+    box = { 1.0, 1.0, 1.0 };
+    n_cells = 0; // make sure it crashes later... we don't want these parameters
 }
 
 grid::grid (std::vector<unsigned int> &c, std::vector<double> &box, const std::vector<sphere>&spheres)
 {
+    this->c = c;
+    this->box = box;
     // allocate 1 spheres just so that the memory is SOMETHING
     for (unsigned int i=0; i<spheres.size (); ++i)
         neighbors.push_back (std::vector<unsigned int> ());
     n_cells = 1;
     for (unsigned int i=0; i<c.size (); ++i)
-    {
-        this->c[i]   = c[i];
-        this->box[i] = box[i];
         n_cells *= c[i];
-    }
     for (unsigned int i=0; i<n_cells; ++i)
         cells.push_back (std::vector<unsigned int> ());
     make_grid (spheres);
@@ -46,12 +41,15 @@ void grid::clear_neighbors ()
 // TODO: Modularize, save "search cells", clean up, test
 void grid::make_grid (std::vector<sphere> spheres)
 {
+    if (n_cells == 0)
+        std::cerr << "WARNING: did not properly initialize grid" << std::endl;
+
     // clean up before doing anything
     clear_neighbors ();
     // create a list that stores the given cell of each sphere
     std::vector<unsigned int> sphere_cells;
     // This list will contain the cells searched by any given sphere (temp arr.)
-    unsigned int search_cells [d*d*d]; 
+    unsigned int search_cells [3*3*3]; 
     
     // now iterate through all spheres and place them on the cell grid
     for (unsigned int i=0; i<spheres.size (); ++i)
@@ -77,7 +75,6 @@ void grid::make_grid (std::vector<sphere> spheres)
     // for now, this handles the monodisperse case
     for (unsigned int i=0; i<spheres.size (); ++i)
     {
-        std::cout << i << std::endl;
         unsigned int s_cell = sphere_cells[i];
 
         // --------------------
@@ -153,13 +150,12 @@ grid::~grid ()
 world::world (std::vector<sphere> spheres)
 {
     this->spheres = spheres;
-    std::cout << "lets get started" << std::endl;
-    //std::vector<unsigned int> c = { 6, 6, 6 };
-    //std::vector<double> box = { 1.0, 1.0, 1.0 };
-    //g = grid (c, box, spheres);
-    //std::vector<unsigned int> neighbs = g.get_neighbors (0);
-    //for (auto & it : neighbs)
-    //    std::cout << it << std::endl;
+    std::vector<unsigned int> c = { 6, 6, 6 };
+    std::vector<double> box = { 1.0, 1.0, 1.0 };
+    g = grid (c, box, spheres);
+    std::vector<unsigned int> neighbs = g.get_neighbors (3);
+    for (auto & it : neighbs)
+        std::cout << it << std::endl;
 }
 
 // End World
