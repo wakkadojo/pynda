@@ -140,7 +140,8 @@ std::vector<unsigned int> & grid::get_spheres_in_cell (unsigned int i)
 
 grid::~grid ()
 {
-    // nothing to do
+    clear_cells ();
+    clear_neighbors ();
 }
 
 // End Grid
