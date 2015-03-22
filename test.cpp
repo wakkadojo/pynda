@@ -1,25 +1,8 @@
 #include "linalg.h"
 #include "body.h"
 #include "world.h"
-#include "utils.h"
 #include <iostream>
-#include <cmath>
-
-void list_test ()
-{
-    list<double> s;
-    s.insert (1.0);
-    s.insert (2.0);
-    s.insert (3.0);
-    s.insert (4.0);
-    s.insert (5.0);
-    double & val = s.get ();
-    s.clear ();
-    for (s.seek (); !s.at_end(); s.next ())
-    {
-        std::cout << s.get () << val << std::endl;
-    }
-}
+#include <vector>
 
 int main (void)
 {

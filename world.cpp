@@ -14,13 +14,13 @@ grid::grid ()
     }
 }
 
-grid::grid (unsigned int * c, double * box, std::vector<sphere> spheres)
+grid::grid (std::vector<unsigned int> &c, std::vector<double> &box, const std::vector<sphere>&spheres)
 {
     // allocate 1 spheres just so that the memory is SOMETHING
     for (unsigned int i=0; i<spheres.size (); ++i)
         neighbors.push_back (std::vector<unsigned int> ());
     n_cells = 1;
-    for (unsigned int i=0; i<d; ++i)
+    for (unsigned int i=0; i<c.size (); ++i)
     {
         this->c[i]   = c[i];
         this->box[i] = box[i];
@@ -59,7 +59,7 @@ void grid::make_grid (std::vector<sphere> spheres)
         // the box lengths are box, and extend from -l/2 to l/2 (eg)
         unsigned int cell = 0;
         unsigned int mult = 1;
-        for (unsigned int j=0; j<d; ++j)
+        for (unsigned int j=0; j<c.size (); ++j)
         {
             // if the sphere is in the box, this cell number will be in 
             // the range [0, n_cells]
@@ -77,6 +77,7 @@ void grid::make_grid (std::vector<sphere> spheres)
     // for now, this handles the monodisperse case
     for (unsigned int i=0; i<spheres.size (); ++i)
     {
+        std::cout << i << std::endl;
         unsigned int s_cell = sphere_cells[i];
 
         // --------------------
@@ -87,7 +88,7 @@ void grid::make_grid (std::vector<sphere> spheres)
         // after the simulation is up and working.
         unsigned int center_cells [d]; // implemented same way as Nich's code
         unsigned int mult = 1;
-        for (unsigned int j=0; j<d; ++j)
+        for (unsigned int j=0; j<c.size (); ++j)
         {
             center_cells[j] = (s_cell/mult)%c[j]; // index in each dimension
             mult *= c[j];
@@ -117,7 +118,7 @@ void grid::make_grid (std::vector<sphere> spheres)
         // --------------------
 
         // go through all adjacent cells and compile neighbor list
-        for (unsigned int j=0; j<d*d*d; ++j)
+        for (unsigned int j=0; j<3*3*3; ++j)
         {
             unsigned int adj_cell = search_cells[j];
             if (s_cell < n_cells && adj_cell < n_cells)
@@ -140,8 +141,7 @@ std::vector<unsigned int> & grid::get_spheres_in_cell (unsigned int i)
 
 grid::~grid ()
 {
-    clear_cells ();
-    clear_neighbors ();
+    // vectors free themselves
 }
 
 // End Grid
@@ -153,12 +153,13 @@ grid::~grid ()
 world::world (std::vector<sphere> spheres)
 {
     this->spheres = spheres;
-    unsigned int c[3] = { 6, 6, 6 };
-    double box[3] = { 1.0, 1.0, 1.0 };
-    g = grid (c, box, spheres);
-    std::vector<unsigned int> neighbs = g.get_neighbors (1);
-    for (auto & it : neighbs)
-        std::cout << it << std::endl;
+    std::cout << "lets get started" << std::endl;
+    //std::vector<unsigned int> c = { 6, 6, 6 };
+    //std::vector<double> box = { 1.0, 1.0, 1.0 };
+    //g = grid (c, box, spheres);
+    //std::vector<unsigned int> neighbs = g.get_neighbors (0);
+    //for (auto & it : neighbs)
+    //    std::cout << it << std::endl;
 }
 
 // End World
