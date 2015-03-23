@@ -50,7 +50,7 @@ void grid::set_sphere_cells (std::vector<sphere> spheres) {
         {
             // if the sphere is in the box, this cell number will be in 
             // the range [0, n_cells]
-            cell += (unsigned int) (spheres[i].x.get (j)*c[j]/box[j])*mult;
+            cell += (unsigned int) (spheres[i].x[j]*c[j]/box[j])*mult;
             mult *= c[j];
         }
         // only add to cells if it was in our box
@@ -149,7 +149,7 @@ world::world (std::vector<sphere> spheres)
     std::vector<unsigned int> c = { 6, 6, 6 };
     std::vector<double> box = { 1.0, 1.0, 1.0 };
     g = grid (c, box, spheres);
-    std::vector<unsigned int> neighbs = g.get_neighbors (3);
+    std::vector<unsigned int> neighbs = g.get_neighbors (2);
     for (auto & it : neighbs)
         std::cout << it << std::endl;
 }

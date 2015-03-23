@@ -39,8 +39,6 @@ void vec3d::set (int who, double what) { x[who] = what; }
 
 double vec3d::norm () { return sqrt (this->dot (*this)); }
 
-double vec3d::get (int i) { return x[i]; }
-
 int vec3d::getDim () { return d; }
 
 // Dot and cross products
@@ -61,6 +59,11 @@ vec3d vec3d::cross (vec3d other)
 }
 
 // Operators and such
+
+double& vec3d::operator[] (const int i) 
+{
+    return x[i]; 
+}
 
 vec3d& vec3d::operator= (const vec3d& other)
 {
