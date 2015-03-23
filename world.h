@@ -10,13 +10,17 @@
 class grid
 {
     unsigned int n_cells;
-    std::vector< std::vector<unsigned int> > cells;   // stores the occupying particle indexes in each cell
-    std::vector< std::vector<unsigned int> > neighbors; // stores the neighbors of each particle
+    std::vector<std::vector<unsigned int>> cells;   // stores the occupying particle indexes in each cell
+    std::vector<std::vector<unsigned int>> neighbors; // stores the neighbors of each particle
+    std::vector<std::vector<unsigned int>> search_cells; // cells to search
+    std::vector<unsigned int> sphere_cells; // cell numbers of the spheres
     std::vector<double> box;         // the length of each dimension, centered at 0
     std::vector<unsigned int> c;     // number of cells in each dimension
     private:
         void clear_cells ();     // empties each cell
         void clear_neighbors (); // empties each neighbor list
+        void set_search_cells (); // sets which cells to look in for overlaps
+        void set_sphere_cells (std::vector<sphere>); // set cell # for spheres
         void make_grid (std::vector<sphere>); // make grid and neighbor list
     public:
         grid ();

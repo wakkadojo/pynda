@@ -16,13 +16,13 @@ grid::grid (std::vector<unsigned int> &c, std::vector<double> &box, const std::v
     this->c = c;
     this->box = box;
     // allocate 1 spheres just so that the memory is SOMETHING
-    for (unsigned int i=0; i<spheres.size (); ++i)
-        neighbors.push_back (std::vector<unsigned int> ());
+    neighbors = std::vector<std::vector<unsigned int>> (spheres.size ());
+
     n_cells = 1;
     for (unsigned int i=0; i<c.size (); ++i)
         n_cells *= c[i];
-    for (unsigned int i=0; i<n_cells; ++i)
-        cells.push_back (std::vector<unsigned int> ());
+    cells = std::vector<std::vector<unsigned int>> (n_cells);
+    
     make_grid (spheres);
 }
 
@@ -38,20 +38,9 @@ void grid::clear_neighbors ()
         neighbors[i].clear ();
 }
 
-// TODO: Modularize, save "search cells", clean up, test
-void grid::make_grid (std::vector<sphere> spheres)
-{
-    if (n_cells == 0)
-        std::cerr << "WARNING: did not properly initialize grid" << std::endl;
-
-    // clean up before doing anything
-    clear_neighbors ();
-    // create a list that stores the given cell of each sphere
-    std::vector<unsigned int> sphere_cells;
-    // This list will contain the cells searched by any given sphere (temp arr.)
-    unsigned int search_cells [3*3*3]; 
-    
-    // now iterate through all spheres and place them on the cell grid
+void grid::set_sphere_cells (std::vector<sphere> spheres) {
+    sphere_cells = std::vector<unsigned int> (spheres.size ());
+    // iterate through all spheres and place them on the cell grid
     for (unsigned int i=0; i<spheres.size (); ++i)
     {
         // the box lengths are box, and extend from -l/2 to l/2 (eg)
@@ -70,24 +59,23 @@ void grid::make_grid (std::vector<sphere> spheres)
         // store the given sphere cell
         sphere_cells.push_back (cell);
     }
-    
-    // now go through the cells to construct the neighbor list
-    // for now, this handles the monodisperse case
-    for (unsigned int i=0; i<spheres.size (); ++i)
-    {
-        unsigned int s_cell = sphere_cells[i];
+}
 
+void grid::set_search_cells () {
+    search_cells = std::vector<std::vector<unsigned int>> (n_cells);
+    for (unsigned int i=0; i<search_cells.size (); ++i)
+    {
         // --------------------
         // make a list of all adjacent cells
         // For now just hardcode d = 2/3 in with many nested for loops. There
         // should be a recursive algorithm that finds 3 cells and calls 3 more
         // of itself etc to generate the cell list. But perhaps implement this
         // after the simulation is up and working.
-        unsigned int center_cells [d]; // implemented same way as Nich's code
+        unsigned int center_cells [3]; // index of center cell in 3d
         unsigned int mult = 1;
         for (unsigned int j=0; j<c.size (); ++j)
         {
-            center_cells[j] = (s_cell/mult)%c[j]; // index in each dimension
+            center_cells[j] = (i/mult)%c[j]; // index in each dimension
             mult *= c[j];
         }
         // one grain size search distance, hardcode 3d
@@ -101,29 +89,37 @@ void grid::make_grid (std::vector<sphere> spheres)
                     int scl = center_cells[2] + l - 1; 
                     // check bounds here, if over the edge then mark the search
                     // cell by a value that will be ignored later
-                    if (scj>=0   && sck>=0   && scl>=0 &&
+                    if (scj>=0 && sck>=0 && scl>=0 &&
                         (unsigned int) scj<c[0] &&
                         (unsigned int) sck<c[1] &&
                         (unsigned int) scl<c[2])
                         // store what each cell was in each dimension
-                        search_cells[j + k*d + l*d*d] = scj + sck*c[0] + scl*c[0]*c[1];
-                    else
-                        // flag queried cell out of bounds
-                        search_cells[j + k*d + l*d*d] = n_cells;
+                        search_cells[i].push_back (scj+sck*c[0]+scl*c[0]*c[1]);
                 }
-        // done dentifying adjacent cells
-        // --------------------
-
-        // go through all adjacent cells and compile neighbor list
-        for (unsigned int j=0; j<3*3*3; ++j)
-        {
-            unsigned int adj_cell = search_cells[j];
-            if (s_cell < n_cells && adj_cell < n_cells)
-                for (auto & neighbor : cells[adj_cell])
-                    if (neighbor != i) // dont add self to neighbor list
-                        neighbors[i].push_back (neighbor);
-        }
     }
+}
+
+// TODO: Modularize, save "search cells", clean up, test
+void grid::make_grid (std::vector<sphere> spheres)
+{
+    if (n_cells == 0)
+        std::cerr << "WARNING: did not properly initialize grid" << std::endl;
+
+    // clean up before doing anything
+    clear_neighbors ();
+   
+    // update cell location for each sphere
+    set_sphere_cells (spheres);
+    // update which cells should be searched for each cell
+    set_search_cells ();
+
+    // now go through the cells to construct the neighbor list
+    // for now, this handles the monodisperse case
+    for (unsigned int i=0; i<spheres.size (); ++i)
+        for (auto adj_cell : search_cells[sphere_cells[i]])
+            for (auto & neighbor : cells[adj_cell])
+                if (neighbor != i) // dont add self to neighbor list
+                    neighbors[i].push_back (neighbor);
 }
 
 std::vector<unsigned int> & grid::get_neighbors (unsigned int i)
