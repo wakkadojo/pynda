@@ -23,12 +23,12 @@ class vec3d
         void set (double, double, double);
         void set (int, double);
         double norm ();
-        double get (int);
         int getDim ();
         // Define the two notions of multiplication for vectors
         double dot (vec3d);
         vec3d cross (vec3d);
         // Operators and such 
+        double& operator[] (const int);
         vec3d& operator= (const vec3d&);
         vec3d operator+ (vec3d);
         vec3d operator- (vec3d);

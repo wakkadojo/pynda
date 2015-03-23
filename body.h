@@ -2,8 +2,18 @@
 #define BODY_H
 
 #include <vector>
+#include <iostream>
 #include "constants.h"
 #include "linalg.h"
+
+struct sphere_package_data
+{
+    double m, r, I;
+    double x, y, z;
+    double vx, vy, vz;
+    double wx, wy, wz;
+    int flag;
+};
 
 struct sphere
 {
@@ -11,10 +21,9 @@ struct sphere
     double r;    // radius
     double I;    // moment of inertia
     vec3d x;     // sphere position
-    vec3d q;     // sphere orientation
     vec3d v;     // sphere velocity
     vec3d w;     // rotational velocity
-    bool moving; // is the sphere moving or static
+    int flag;    // is the sphere moving or static
     // TODO: stress tensor
     private:
         void init (double, double, double, vec3d, vec3d, vec3d);
@@ -22,6 +31,8 @@ struct sphere
         sphere ();
         sphere (double, double, vec3d, vec3d);
         sphere (double, double, double, vec3d, vec3d, vec3d);
+        sphere (sphere_package_data);
+        sphere_package_data package ();
 };
 
 struct body_interact_data
