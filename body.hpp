@@ -51,7 +51,7 @@ class body_interactor
     public:
         // TODO: include stuck grains (m -> infinity etc)
         body_interactor (double, double);
-        body_interact_data interact (unsigned int, unsigned int, std::vector<sphere>);
+        body_interact_data interact (unsigned int, unsigned int, std::vector<sphere> &);
 };
 
 #endif // BODY_H

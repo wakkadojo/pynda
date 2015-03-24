@@ -62,7 +62,7 @@ body_interactor::body_interactor (double mu, double cor)
 // Returns interaction response from bodies. The response will contain no 
 // offsets and forces if the spheres are not overlapping/interacting, but 
 // generally, this function should NOT be called if spheres are not interacting
-body_interact_data body_interactor::interact (unsigned int i, unsigned int j, std::vector<sphere> spheres)
+body_interact_data body_interactor::interact (unsigned int i, unsigned int j, std::vector<sphere> &spheres)
 {
     body_interact_data bid;
     // are these valid spheres
