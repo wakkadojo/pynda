@@ -37,12 +37,6 @@ void sphere::init (double r, double m, double I, vec3d x, vec3d v, vec3d w)
 // Body Interactor
 //
 
-body_interactor::body_interactor (double mu, double cor)
-{
-    this->mu = mu;
-    this->cor = cor;
-}
-
 // Returns interaction response from bodies. The response will contain no 
 // offsets and forces if the spheres are not overlapping/interacting, but 
 // generally, this function should NOT be called if spheres are not interacting
