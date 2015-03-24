@@ -7,15 +7,6 @@
 #include "constants.hpp"
 #include "linalg.hpp"
 
-struct sphere_package_data
-{
-    double m, r, I;
-    double x, y, z;
-    double vx, vy, vz;
-    double wx, wy, wz;
-    int flag;
-};
-
 struct sphere
 {
     friend class boost::serialization::access;
@@ -39,8 +30,6 @@ struct sphere
         sphere ();
         sphere (double, double, vec3d, vec3d);
         sphere (double, double, double, vec3d, vec3d, vec3d);
-        sphere (sphere_package_data);
-        sphere_package_data package ();
 };
 
 struct body_interact_data

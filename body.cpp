@@ -20,12 +20,6 @@ sphere::sphere (double r, double m, double I, vec3d x, vec3d v, vec3d w)
     init (r, m, I, x, v, w);
 }
 
-sphere::sphere (sphere_package_data spd)
-{
-    init (spd.r, spd.m, spd.I, vec3d (spd.x, spd.y, spd.z), 
-          vec3d (spd.vx, spd.vy, spd.vz), vec3d (spd.wx, spd.wy, spd.wz));
-}
-
 void sphere::init (double r, double m, double I, vec3d x, vec3d v, vec3d w)
 {
     this->m = m;
@@ -35,16 +29,6 @@ void sphere::init (double r, double m, double I, vec3d x, vec3d v, vec3d w)
     this->v = v;
     this->w = w;
     flag = 0;
-}
-
-sphere_package_data sphere::package ()
-{
-    sphere_package_data spd;
-    spd.m = m; spd.r = r; spd.I = I;
-    spd.x = x[0]; spd.y = x[1]; spd.z = x[2];
-    spd.vx = v[0]; spd.vy = v[1]; spd.vz = v[2];
-    spd.wx = w[0]; spd.wy = w[1]; spd.wz = w[2];
-    return spd;
 }
 
 // End Sphere

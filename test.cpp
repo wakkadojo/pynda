@@ -21,11 +21,16 @@ int main (void)
     oa << w;
     os.close ();
     
+    spheres.erase (spheres.begin (), spheres.begin ()+2);
+
     world w2 (spheres);
+    std::cout << w2.count_spheres () << std::endl;
     std::ifstream is ("boost_test.bin");
     boost::archive::binary_iarchive ia (is);
     ia >> w2;
     is.close ();
+
+    std::cout << w2.count_spheres () << std::endl;
 
     return 0;
 }

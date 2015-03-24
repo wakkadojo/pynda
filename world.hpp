@@ -50,6 +50,7 @@ class world
     public:
         // TODO: timestep, gather+apply impulses, save/load state
         world (std::vector<sphere>);
+        unsigned int count_spheres () { return spheres.size (); }
 };
 
 #endif // WORLD_H
