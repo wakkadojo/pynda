@@ -43,9 +43,10 @@ class world
     template <class Archive> void serialize (Archive & ar, unsigned int version)
     {
         ar & spheres;
+        ar & bi;
     }
     std::vector<sphere> spheres; // list of spheres
-    //body_interactor bi;
+    body_interactor bi;
     grid g;
     public:
         // TODO: timestep, gather+apply impulses, save/load state

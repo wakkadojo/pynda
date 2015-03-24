@@ -45,7 +45,10 @@ struct body_interact_data
 class body_interactor
 {
     friend class boost::serialization::access;
-    template <class Archive> void serialize (Archive & ar) { ar & mu & cor; }
+    template <class Archive> void serialize (Archive & ar, unsigned int version)
+    { 
+        ar & mu & cor; 
+    }
     double mu, cor; // friction and coefficient of restitution
     public:
         // TODO: include stuck grains (m -> infinity etc)

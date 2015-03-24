@@ -149,9 +149,9 @@ world::world (std::vector<sphere> spheres)
     std::vector<unsigned int> c = { 6, 6, 6 };
     std::vector<double> box = { 1.0, 1.0, 1.0 };
     g = grid (c, box, spheres);
-    std::vector<unsigned int> neighbs = g.get_neighbors (2);
-    for (auto & it : neighbs)
-        std::cout << it << std::endl;
+    //std::vector<unsigned int> neighbs = g.get_neighbors (2);
+    //for (auto & it : neighbs)
+    //    std::cout << it << std::endl;
 }
 
 // End World
