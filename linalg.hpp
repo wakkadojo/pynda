@@ -2,7 +2,7 @@
 #define LINALG_H
 
 #include <iostream>
-#include "constants.h"
+#include "constants.hpp"
 
 // * WARNING: I don't think the copy constructors do a deep copy. Never tested.
 // * Could make more general by using templates, but... meh.

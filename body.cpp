@@ -1,4 +1,4 @@
-#include "body.h"
+#include "body.hpp"
 #include <iostream>
 #include <cmath>
 

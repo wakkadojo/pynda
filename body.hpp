@@ -3,8 +3,8 @@
 
 #include <vector>
 #include <iostream>
-#include "constants.h"
-#include "linalg.h"
+#include "constants.hpp"
+#include "linalg.hpp"
 
 struct sphere_package_data
 {

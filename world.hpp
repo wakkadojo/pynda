@@ -1,9 +1,9 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "linalg.h"
-#include "constants.h"
-#include "body.h"
+#include "linalg.hpp"
+#include "constants.hpp"
+#include "body.hpp"
 #include <vector>
 
 // grid used to find particle neighbors

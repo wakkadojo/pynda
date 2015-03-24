@@ -1,6 +1,6 @@
-#include "linalg.h"
-#include "body.h"
-#include "world.h"
+#include "linalg.hpp"
+#include "body.hpp"
+#include "world.hpp"
 #include <iostream>
 #include <vector>
 

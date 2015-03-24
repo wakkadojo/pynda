@@ -1,6 +1,6 @@
 #include <cmath>
 #include <cassert>
-#include "linalg.h"
+#include "linalg.hpp"
 
 // Vectors
 //
