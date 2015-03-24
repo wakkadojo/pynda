@@ -2,6 +2,7 @@
 #define LINALG_H
 
 #include <iostream>
+#include <boost/serialization/serialization.hpp>
 #include "constants.hpp"
 
 // * WARNING: I don't think the copy constructors do a deep copy. Never tested.
@@ -13,6 +14,11 @@ class vec3d;
 
 class vec3d
 {
+    friend class boost::serialization::access;
+    template <class Archive> void serialize (Archive & ar, unsigned int version)
+    { 
+        ar & x;
+    }
     double x[d];
     public:
         vec3d ();

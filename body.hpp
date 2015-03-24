@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <boost/serialization/serialization.hpp>
 #include "constants.hpp"
 #include "linalg.hpp"
 
@@ -17,6 +18,13 @@ struct sphere_package_data
 
 struct sphere
 {
+    friend class boost::serialization::access;
+    template <class Archive> void serialize (Archive & ar, unsigned int version)
+    {
+        ar & m & r & I;
+        ar & x & v & w;
+        ar & flag;
+    }
     double m;    // mass
     double r;    // radius
     double I;    // moment of inertia
@@ -47,6 +55,8 @@ struct body_interact_data
 // TODO: function pointers and custom interaction functions (sticking)
 class body_interactor
 {
+    friend class boost::serialization::access;
+    template <class Archive> void serialize (Archive & ar) { ar & mu & cor; }
     double mu, cor; // friction and coefficient of restitution
     public:
         // TODO: include stuck grains (m -> infinity etc)

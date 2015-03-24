@@ -1,10 +1,12 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include <vector>
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/vector.hpp>
 #include "linalg.hpp"
 #include "constants.hpp"
 #include "body.hpp"
-#include <vector>
 
 // grid used to find particle neighbors
 class grid
@@ -37,6 +39,11 @@ class grid
 // Handles tracking spheres and finding neighbors etc
 class world
 {
+    friend class boost::serialization::access;
+    template <class Archive> void serialize (Archive & ar, unsigned int version)
+    {
+        ar & spheres;
+    }
     std::vector<sphere> spheres; // list of spheres
     //body_interactor bi;
     grid g;

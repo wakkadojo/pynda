@@ -1,6 +1,7 @@
 CC=g++
 RM=rm
 CFLAGS=-m64 -O2 -std=c++11 -Wall
+INCLUDE=-lboost_serialization
 SOURCES=test.cpp world.cpp body.cpp linalg.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=test
@@ -8,10 +9,10 @@ EXECUTABLE=test
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $@
+	$(CC) $(CFLAGS) $(INCLUDE) $(OBJECTS) -o $@
 
 %.o : %.cpp
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) $(INCLUDE) -c $<
 
 clean:
 	$(RM) $(OBJECTS) $(EXECUTABLE)
