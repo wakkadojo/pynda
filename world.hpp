@@ -12,18 +12,29 @@
 class grid
 {
     unsigned int n_cells;
-    std::vector<std::vector<unsigned int>> cells;   // stores the occupying particle indexes in each cell
-    std::vector<std::vector<unsigned int>> neighbors; // stores the neighbors of each particle
-    std::vector<std::vector<unsigned int>> search_cells; // cells to search
-    std::vector<unsigned int> sphere_cells; // cell numbers of the spheres
-    std::vector<double> box;         // the length of each dimension, centered at 0
-    std::vector<unsigned int> c;     // number of cells in each dimension
+    // stores the occupying particle indexes in each cell
+    std::vector<std::vector<unsigned int>> cells;
+    // stores the neighbors of each particle
+    std::vector<std::vector<unsigned int>> neighbors; 
+    // which cells should be searched for each given center cell
+    std::vector<std::vector<unsigned int>> search_cells; 
+    // cell numbers of the spheres
+    std::vector<unsigned int> sphere_cells; 
+    // the length of each dimension, centered at 0
+    std::vector<double> box;
+    // number of cells in each dimension
+    std::vector<unsigned int> c;
     private:
-        void clear_cells ();     // empties each cell
-        void clear_neighbors (); // empties each neighbor list
-        void set_search_cells (); // sets which cells to look in for overlaps
-        void set_sphere_cells (std::vector<sphere>); // set cell # for spheres
-        void make_grid (std::vector<sphere>); // make grid and neighbor list
+        // sets which cells to look in for overlaps, should be called in constructor
+        void set_search_cells ();
+        // empties each cell
+        void clear_cells ();
+        // empties each neighbor list
+        void clear_neighbors (); 
+        // set cell # for spheres and also mark which cells have spheres
+        void set_sphere_cells (std::vector<sphere>);
+        // make grid and neighbor list
+        void make_grid (std::vector<sphere>);
     public:
         grid ();
         grid (std::vector<unsigned int> &, std::vector<double> &, const std::vector<sphere> &);
@@ -50,6 +61,7 @@ class world
     grid g;
     public:
         // TODO: timestep, gather+apply impulses, save/load state
+        world ();
         world (std::vector<sphere>);
         unsigned int count_spheres () { return spheres.size (); }
 };

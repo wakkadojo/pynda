@@ -2,7 +2,7 @@ CC=g++
 RM=rm
 CFLAGS=-m64 -O2 -std=c++11 -Wall
 INCLUDE=-lboost_serialization
-SOURCES=test.cpp world.cpp body.cpp linalg.cpp
+SOURCES=test.cpp world.cpp body.cpp linalg.cpp io.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=test
 

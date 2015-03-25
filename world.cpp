@@ -19,6 +19,7 @@ grid::grid (std::vector<unsigned int> &c, std::vector<double> &box, const std::v
      */
     this->c = c;
     this->box = box;
+
     // allocate 1 spheres just so that the memory is SOMETHING
     neighbors = std::vector<std::vector<unsigned int>> (spheres.size ());
 
@@ -27,6 +28,9 @@ grid::grid (std::vector<unsigned int> &c, std::vector<double> &box, const std::v
         n_cells *= c[i];
     cells = std::vector<std::vector<unsigned int>> (n_cells);
     
+    // mark which cells should be searched for each cell
+    set_search_cells ();
+
     make_grid (spheres);
 }
 
@@ -114,8 +118,6 @@ void grid::make_grid (std::vector<sphere> spheres)
    
     // update cell location for each sphere
     set_sphere_cells (spheres);
-    // update which cells should be searched for each cell
-    set_search_cells ();
 
     // now go through the cells to construct the neighbor list
     // for now, this handles the monodisperse case
@@ -146,6 +148,10 @@ grid::~grid ()
 
 // World
 //
+
+world::world () {
+
+}
 
 world::world (std::vector<sphere> spheres)
 {

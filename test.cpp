@@ -6,6 +6,7 @@
 #include "linalg.hpp"
 #include "body.hpp"
 #include "world.hpp"
+#include "io.hpp"
 
 int main (void)
 {
@@ -16,18 +17,9 @@ int main (void)
     spheres.push_back (sphere (0.1, 1, vec3d (0.5, 0.5, 0.5), vec3d ()));
     
     world w (spheres);
-    std::ofstream os ("boost_test.bin");
-    boost::archive::binary_oarchive oa (os);
-    oa << w;
-    os.close ();
+    io::save (w, "boost_test.bin");
     
-    std::vector<sphere> spheres2;
-    world w2 (spheres2);
-    std::cout << w2.count_spheres () << std::endl;
-    std::ifstream is ("boost_test.bin");
-    boost::archive::binary_iarchive ia (is);
-    ia >> w2;
-    is.close ();
+    world w2 = io::load ("boost_test.bin");
 
     std::cout << w2.count_spheres () << std::endl;
 
