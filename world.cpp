@@ -13,6 +13,10 @@ grid::grid ()
 
 grid::grid (std::vector<unsigned int> &c, std::vector<double> &box, const std::vector<sphere>&spheres)
 {
+    /**
+     * 1. Only get search cells for cells with spheres, make warning note about that
+     * 2. Eliminate having too many class variables -- only need them if we later decide to save grid between steps
+     */
     this->c = c;
     this->box = box;
     // allocate 1 spheres just so that the memory is SOMETHING
