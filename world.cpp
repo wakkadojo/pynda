@@ -11,7 +11,7 @@ grid::grid ()
     n_cells = 0; // make sure it crashes later... we don't want these parameters
 }
 
-grid::grid (std::vector<unsigned int> &c, std::vector<double> &box, const std::vector<sphere>&spheres)
+grid::grid (std::vector<unsigned int> c, std::vector<double> box)
 {
     /**
      * 1. Only get search cells for cells with spheres, make warning note about that
@@ -20,34 +20,17 @@ grid::grid (std::vector<unsigned int> &c, std::vector<double> &box, const std::v
     this->c = c;
     this->box = box;
 
-    // allocate 1 spheres just so that the memory is SOMETHING
-    neighbors = std::vector<std::vector<unsigned int>> (spheres.size ());
-
     n_cells = 1;
     for (unsigned int i=0; i<c.size (); ++i)
         n_cells *= c[i];
-    cells = std::vector<std::vector<unsigned int>> (n_cells);
     
     // mark which cells should be searched for each cell
     set_search_cells ();
-
-    make_grid (spheres);
 }
 
-void grid::clear_cells ()
-{
-    for (unsigned int i=0; i<n_cells; ++i)
-        cells[i].clear ();
-}
-
-void grid::clear_neighbors ()
-{
-    for (unsigned int i=0; i<neighbors.size (); ++i)
-        neighbors[i].clear ();
-}
-
-void grid::set_sphere_cells (std::vector<sphere> spheres) {
+void grid::set_sphere_cells (const std::vector<sphere> & spheres) {
     sphere_cells = std::vector<unsigned int> (spheres.size ());
+    cells = std::vector<std::vector<unsigned int>> (n_cells);
     // iterate through all spheres and place them on the cell grid
     for (unsigned int i=0; i<spheres.size (); ++i)
     {
@@ -58,7 +41,8 @@ void grid::set_sphere_cells (std::vector<sphere> spheres) {
         {
             // if the sphere is in the box, this cell number will be in 
             // the range [0, n_cells]
-            cell += (unsigned int) (spheres[i].x[j]*c[j]/box[j])*mult;
+            vec3d x = spheres[i].x; // make this guy so we can pass spheres as const
+            cell += (unsigned int) (x[j]*c[j]/box[j])*mult;
             mult *= c[j];
         }
         // only add to cells if it was in our box
@@ -108,16 +92,16 @@ void grid::set_search_cells () {
 }
 
 // TODO: Modularize, save "search cells", clean up, test
-void grid::make_grid (std::vector<sphere> spheres)
+void grid::make_grid (const std::vector<sphere> & spheres)
 {
     if (n_cells == 0)
         std::cerr << "WARNING: did not properly initialize grid" << std::endl;
-
-    // clean up before doing anything
-    clear_neighbors ();
    
     // update cell location for each sphere
     set_sphere_cells (spheres);
+
+    // clear and initiate neighbor list
+    neighbors = std::vector<std::vector<unsigned int>> (spheres.size ());
 
     // now go through the cells to construct the neighbor list
     // for now, this handles the monodisperse case
@@ -128,14 +112,9 @@ void grid::make_grid (std::vector<sphere> spheres)
                     neighbors[i].push_back (neighbor);
 }
 
-std::vector<unsigned int> & grid::get_neighbors (unsigned int i)
+std::vector<unsigned int> grid::get_neighbors (unsigned int i)
 {
     return neighbors[i];
-}
-
-std::vector<unsigned int> & grid::get_spheres_in_cell (unsigned int i)
-{
-    return cells[i];
 }
 
 grid::~grid ()
@@ -149,19 +128,28 @@ grid::~grid ()
 // World
 //
 
-world::world () {
-
+world::world () 
+{
+    g = grid (c, box);
 }
 
-world::world (std::vector<sphere> spheres)
+void world::step () 
 {
-    this->spheres = spheres;
-    std::vector<unsigned int> c = { 6, 6, 6 };
-    std::vector<double> box = { 1.0, 1.0, 1.0 };
-    g = grid (c, box, spheres);
-    //std::vector<unsigned int> neighbs = g.get_neighbors (2);
-    //for (auto & it : neighbs)
-    //    std::cout << it << std::endl;
+    // refresh grid grid
+    g.make_grid (spheres);
+
+    // Sphere interactions, TODO: continuous forces
+    for (unsigned int i=0; i<spheres.size (); ++i)
+        for (unsigned int j : g.get_neighbors (i))
+            if (i < j)
+                bi.interact (spheres[i], spheres[j]);
+
+    // Position updating
+    for (auto & sphere : spheres)
+        sphere.x = sphere.x + sphere.v*dt;
+
+    // Update state variable
+    t += dt;
 }
 
 // End World

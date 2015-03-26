@@ -9,6 +9,7 @@
 
 struct sphere
 {
+    // just needs access for saving
     friend class boost::serialization::access;
     template <class Archive> void serialize (Archive & ar, unsigned int version)
     {
@@ -24,20 +25,11 @@ struct sphere
     vec3d w;     // rotational velocity
     int flag;    // is the sphere moving or static
     // TODO: stress tensor
+    sphere ();
+    sphere (double, double, vec3d, vec3d);
+    sphere (double, double, double, vec3d, vec3d, vec3d);
     private:
         void init (double, double, double, vec3d, vec3d, vec3d);
-    public:
-        sphere ();
-        sphere (double, double, vec3d, vec3d);
-        sphere (double, double, double, vec3d, vec3d, vec3d);
-};
-
-struct body_interact_data
-{
-    unsigned int i, j; // labels of the two interacting spheres
-    vec3d f;          // impulse
-    vec3d n;          // the normal vector, needed for torques (n*r1, etc)
-    vec3d dxi, dxj;   // COM offsets
 };
 
 // contains sphere interactions
@@ -54,7 +46,7 @@ class body_interactor
         // TODO: include stuck grains (m -> infinity etc)
         body_interactor () { mu = 0; cor = 0.9; }
         body_interactor (double mu, double cor) { this->mu=mu; this->cor=cor; }
-        body_interact_data interact (unsigned int, unsigned int, std::vector<sphere> &);
+        void interact (sphere &, sphere &);
 };
 
 #endif // BODY_H

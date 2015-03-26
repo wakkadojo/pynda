@@ -40,16 +40,8 @@ void sphere::init (double r, double m, double I, vec3d x, vec3d v, vec3d w)
 // Returns interaction response from bodies. The response will contain no 
 // offsets and forces if the spheres are not overlapping/interacting, but 
 // generally, this function should NOT be called if spheres are not interacting
-body_interact_data body_interactor::interact (unsigned int i, unsigned int j, std::vector<sphere> &spheres)
+void body_interactor::interact (sphere & si, sphere & sj)
 {
-    body_interact_data bid;
-    // are these valid spheres
-    if (i >= spheres.size () || j >= spheres.size ())
-        throw "ERROR: collision indexes invalid";
-
-    sphere si = spheres[i];
-    sphere sj = spheres[j];
-
     // The normal vector, used for both impulse and offset
     vec3d dx = sj.x - si.x;
     vec3d n = dx/dx.norm (); // points from 1 to 2
@@ -58,6 +50,10 @@ body_interact_data body_interactor::interact (unsigned int i, unsigned int j, st
     // offset about the center of mass
     // the amount they are overlapping is the amount we wish to offset them
     double s = si.r + sj.r - dx.norm ();
+    // NOTICE do not interact if not in contact
+    if (s < 0)
+        return;
+
     vec3d dxi = -(sj.m*s/(si.m + sj.m))*n;
     vec3d dxj =  (si.m*s/(si.m + sj.m))*n;
     // END SPHERE OFFSETS
@@ -68,7 +64,7 @@ body_interact_data body_interactor::interact (unsigned int i, unsigned int j, st
     // normal impulse
     double fn = -(1.0+cor)*(dv*n)/(1.0/si.m + 1.0/sj.m);
     // tangential unit vector
-    vec3d t  = dv - (dv*n)*n; t = t/t.norm ();
+    vec3d t = dv - (dv*n)*n; t = t/t.norm ();
     // This is the tangential impulse that would equalize the post-collision
     // tangential veclocities of the two colliding objects. This is the max
     // impulse that can be felt, and is throttled by Coulombic friction.
@@ -80,20 +76,22 @@ body_interact_data body_interactor::interact (unsigned int i, unsigned int j, st
     vec3d f = fn*n + ft*t;
     // END COLLISION IMPULSE
     
-    // Now store the values (only store things that would change particles if
-    // s > 0, i.e., they overlap. See s above. Generally, this function should 
-    // not be called if particles are not overlapping, but we're nice
-    bid.i   = i;
-    bid.j   = j;
-    bid.n   = n;
-    bid.dxi = s > 0 ? dxi : vec3d ();
-    bid.dxj = s > 0 ? dxj : vec3d ();
-    bid.f   = s > 0 ? f : vec3d ();
+    // not be called if particles are not overlapping, but we'll be extra safe
+    dxi = s > 0 ? dxi : vec3d ();
+    dxj = s > 0 ? dxj : vec3d ();
+    f   = s > 0 ? f : vec3d ();
 
-    if (s < 0)
-        std::cerr << "WARNING: called body interaction for bodies that did not interact." << std::endl;
-
-    return bid;
+    // UPDATE SPHERES
+    // position
+    si.x = si.x + dxi;
+    sj.x = sj.x + dxj;
+    // translational velocity
+    si.v = si.v + f/si.m;
+    sj.v = sj.v - f/sj.m;
+    // angular velocity
+    si.w = si.w + si.r*n.cross (f)/si.I; // could alt. use n.cross (t)*ft
+    sj.w = sj.w + sj.r*n.cross (f)/sj.I; // double negative
+    // END UPDATE SPHERES
 }
 
 // End Body Interactor

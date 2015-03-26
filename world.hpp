@@ -17,6 +17,8 @@ class grid
     // stores the neighbors of each particle
     std::vector<std::vector<unsigned int>> neighbors; 
     // which cells should be searched for each given center cell
+    // TODO: IN CASE OF LARGE MEMORY OVERHEAD, DO NOT MAKE FOR EVERY CELL, OR DO ON
+    // THE GO
     std::vector<std::vector<unsigned int>> search_cells; 
     // cell numbers of the spheres
     std::vector<unsigned int> sphere_cells; 
@@ -27,22 +29,18 @@ class grid
     private:
         // sets which cells to look in for overlaps, should be called in constructor
         void set_search_cells ();
-        // empties each cell
-        void clear_cells ();
-        // empties each neighbor list
-        void clear_neighbors (); 
         // set cell # for spheres and also mark which cells have spheres
-        void set_sphere_cells (std::vector<sphere>);
-        // make grid and neighbor list
-        void make_grid (std::vector<sphere>);
+        void set_sphere_cells (const std::vector<sphere> &);
     public:
         grid ();
-        grid (std::vector<unsigned int> &, std::vector<double> &, const std::vector<sphere> &);
+        grid (std::vector<unsigned int>, std::vector<double>);
         ~grid ();
         // TODO: once simulation is up and running, make new local cell 
         // searching algorithm
-        std::vector<unsigned int> & get_neighbors (unsigned int); // get neighbors of a sphere
-        std::vector<unsigned int> & get_spheres_in_cell (unsigned int); // return spheres in cell
+        // get neighbors of a sphere
+        std::vector<unsigned int> get_neighbors (unsigned int); 
+        // make grid and neighbor list
+        void make_grid (const std::vector<sphere> &);
 };
 
 // TODO: oct-tree variant of grid
@@ -57,13 +55,18 @@ class world
         ar & bi;
     }
     std::vector<sphere> spheres; // list of spheres
-    body_interactor bi;
+    body_interactor bi; // needs forces
+    double t, dt;
+    std::vector<unsigned int> c = { 6, 6, 6 };
+    std::vector<double> box = { 1.0, 1.0, 1.0 };
+    // time stepper?
     grid g;
     public:
         // TODO: timestep, gather+apply impulses, save/load state
         world ();
-        world (std::vector<sphere>);
+        void add_sphere (sphere s) { spheres.push_back (s); }
         unsigned int count_spheres () { return spheres.size (); }
+        void step ();
 };
 
 #endif // WORLD_H
