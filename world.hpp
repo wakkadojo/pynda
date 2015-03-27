@@ -53,6 +53,7 @@ class world
     {
         ar & spheres;
         ar & bi;
+        ar & t & dt;
     }
     std::vector<sphere> spheres; // list of spheres
     body_interactor bi; // needs forces

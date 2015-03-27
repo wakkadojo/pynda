@@ -131,6 +131,8 @@ grid::~grid ()
 world::world () 
 {
     g = grid (c, box);
+    t = 0;
+    dt = 0.001; // RG/(100 U0)
 }
 
 void world::step () 
@@ -143,6 +145,24 @@ void world::step ()
         for (unsigned int j : g.get_neighbors (i))
             if (i < j)
                 bi.interact (spheres[i], spheres[j]);
+
+    // Put in some walls
+    for (unsigned int i=0; i<spheres.size (); ++i)
+        for (unsigned int j=0; j<box.size (); ++j)
+        {
+            if (spheres[i].x[j] < spheres[i].r)
+            {
+                spheres[i].x[j] = spheres[i].r;
+                if (spheres[i].v[j] < 0)
+                    spheres[i].v[j] = -spheres[i].v[j];
+            }
+            else if (spheres[i].x[j] < box[j] - spheres[i].r)
+            {
+                spheres[i].x[j] = box[j] - spheres[i].r;
+                if (spheres[i].v[j] > 0)
+                    spheres[i].v[j] = -spheres[i].v[j];
+            }
+        }
 
     // Position updating
     for (auto & sphere : spheres)

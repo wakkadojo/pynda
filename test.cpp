@@ -1,6 +1,5 @@
 #include <iostream>
-#include <vector>
-#include <fstream>
+#include <sstream>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include "linalg.hpp"
@@ -12,16 +11,20 @@ int main (void)
 {
     world w;
 
-    int n_spheres = 5;
-    for (int i=0; i<n_spheres-1; ++i)
-        w.add_sphere (sphere (0.1, 1, vec3d (0.1, 0.1, 0.1), vec3d ()));
-    w.add_sphere (sphere (0.1, 1, vec3d (0.5, 0.5, 0.5), vec3d ()));
+    w.add_sphere (sphere (0.1, 1, vec3d (0.1, 0.2, 0.0), vec3d (0.1, 0.5, 0.0)));
+    w.add_sphere (sphere (0.1, 1, vec3d (0.5, 0.5, 0.0), vec3d (-0.2, 0.3, 0.0)));
+    w.add_sphere (sphere (0.1, 1, vec3d (0.1, 0.5, 0.0), vec3d (0.2, -0.3, 0.0)));
     
-    io::save (w, "boost_test.bin");
+    for (unsigned int i=0; i<10000; ++i)
+    {
+        w.step ();
+        if (i % 100 == 0)
+        {
+            std::stringstream filename;
+            filename << "states/state" << i/100 << ".bin";
+            io::save (w, filename.str ());
+        }
+    }
     
-    world w2 = io::load ("boost_test.bin");
-
-    std::cout << w2.count_spheres () << std::endl;
-
     return 0;
 }
