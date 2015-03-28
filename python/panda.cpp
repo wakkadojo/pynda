@@ -21,4 +21,9 @@ BOOST_PYTHON_MODULE (panda)
 
     class_<sphere> ("sphere")
     ;
+
+    class_<io> ("io")
+        .def ("save", &io::save)
+        .def ("load", &io::load)
+    ;
 }
