@@ -5,16 +5,12 @@
 // Vectors
 //
 
-vec3d::vec3d () { set (0.0, 0.0, 0.0); }
+vec3d::vec3d () { x[0] = x[1] = x[2] = 0.0; }
 
 vec3d::vec3d (double x, double y, double z)
 {
-    double xtemp[3];
-    xtemp[0] = x; xtemp[1] = y; xtemp[2] = z;
-    set (xtemp);
+    this->x[0] = x; this->x[1] = y; this->x[2] = z;
 }
-
-vec3d::vec3d (double * x) { set (x); }
 
 vec3d::vec3d (const vec3d& v)
 {
@@ -22,20 +18,9 @@ vec3d::vec3d (const vec3d& v)
         x[i] = v.x[i];
 }
 
-void vec3d::set (double * x)
-{
-    for (int i=0; i<d; ++i) 
-        this->x[i] = x[i];
-}
-
-void vec3d::set (double x, double y, double z)
-{
-    double xtemp[3];
-    xtemp[0] = x; xtemp[1] = y; xtemp[2] = z;
-    set (xtemp);
-}
-
 void vec3d::set (int who, double what) { x[who] = what; }
+
+double vec3d::get (int who) { return x[who]; }
 
 double vec3d::norm () { return sqrt (this->dot (*this)); }
 

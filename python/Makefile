@@ -1,0 +1,20 @@
+CC=g++
+RM=rm
+CFLAGS=-fPIC -m64 -O2 -std=c++11 -Wall
+LDFLAGS=-shared
+SOURCES=panda.cpp
+ORIGIN=$(shell cd ../ && pwd)
+INCLUDE=-L$(ORIGIN)/lib/ -Wl,-rpath=$(ORIGIN)/lib -I$(ORIGIN)/lib -lpanda -lboost_python3 -I/usr/include/python3.4m/ -lpython3
+OBJECTS=$(SOURCES:.cpp=.o)
+LIBRARY=panda.so
+
+all: $(SOURCES) $(LIBRARY)
+
+$(LIBRARY): $(OBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) $(INCLUDE) -o $@
+
+%.o : %.cpp
+	$(CC) $(CFLAGS) $(INCLUDE) -c $<
+
+clean:
+	$(RM) $(OBJECTS) $(LIBRARY)

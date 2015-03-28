@@ -23,11 +23,9 @@ class vec3d
     public:
         vec3d ();
         vec3d (double, double, double);
-        vec3d (double *);
         vec3d (const vec3d&);
-        void set (double *);
-        void set (double, double, double);
         void set (int, double);
+        double get (int);
         double norm ();
         int getDim ();
         // Define the two notions of multiplication for vectors
