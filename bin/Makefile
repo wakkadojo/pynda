@@ -3,7 +3,8 @@ RM=rm
 CFLAGS=-m64 -O2 -std=c++11 -Wall
 LDFLAGS=-lpanda
 SOURCES=test.cpp
-INCLUDE=-L../lib/ -Wl,-rpath=../lib/ -I../lib/
+ORIGIN=$(shell cd ../ && pwd)
+INCLUDE=-L$(ORIGIN)/lib/ -Wl,-rpath=$(ORIGIN)/lib -I$(ORIGIN)/lib
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=test
 
