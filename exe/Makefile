@@ -1,8 +1,9 @@
 CC=g++
 RM=rm
-CFLAGS=-m64 -02 -std=c++11 -Wall
+CFLAGS=-m64 -O2 -std=c++11 -Wall
+LDFLAGS=-lpanda
 SOURCES=test.cpp
-INCLUDE=-lboost_serialization
+INCLUDE=-L../lib/ -Wl,-rpath=../lib/ -I../lib/
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=test
 
@@ -10,7 +11,7 @@ EXECUTABLE=test
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(CFLAGS) $(INCLUDE) $(OBJECTS) -o $@
+	$(CC) $(CFLAGS) $(INCLUDE) $(LDFLAGS) $(OBJECTS) -o $@
 
 %.o : %.cpp
 	$(CC) $(CFLAGS) $(INCLUDE) -c $<

@@ -1,11 +1,8 @@
 #include <iostream>
 #include <sstream>
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-#include "linalg.hpp"
-#include "body.hpp"
-#include "world.hpp"
-#include "io.hpp"
+#include <world.hpp>
+#include <linalg.hpp>
+#include <io.hpp>
 
 int main (void)
 {
