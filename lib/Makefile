@@ -1,0 +1,21 @@
+CC=g++
+RM=rm
+# Libaray
+CFLAGS=-fPIC -m64 -O2 -std=c++11 -Wall
+LDFLAGS=-shared
+INCLUDE=-lboost_serialization
+SOURCES=world.cpp body.cpp linalg.cpp io.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+LIBRARY=libpanda.so
+
+all: $(SOURCES) $(LIBRARY)
+
+$(LIBRARY): $(OBJECTS)
+	$(CC) $(CFLAGS) $(INCLUDE) $(LDFLAGS) $(OBJECTS) -o $@
+
+%.o : %.cpp
+	$(CC) $(CFLAGS) $(INCLUDE) -c $<
+
+clean:
+	$(RM) $(OBJECTS) $(LIBRARY)
+	
