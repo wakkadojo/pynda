@@ -166,7 +166,10 @@ void world::step ()
 
     // Position updating
     for (auto & sphere : spheres)
+    {
         sphere.x = sphere.x + sphere.v*dt;
+        sphere.q = sphere.q + sphere.w*dt;
+    }
 
     // Update state variable
     t += dt;

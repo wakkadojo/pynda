@@ -1,6 +1,4 @@
 #include "body.hpp"
-#include <iostream>
-#include <cmath>
 
 // Sphere
 //

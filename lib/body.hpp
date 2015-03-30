@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include <boost/serialization/serialization.hpp>
 #include "constants.hpp"
 #include "linalg.hpp"
@@ -14,7 +15,7 @@ struct sphere
     template <class Archive> void serialize (Archive & ar, unsigned int version)
     {
         ar & m & r & I;
-        ar & x & v & w;
+        ar & x & v & q & w;
         ar & flag;
     }
     double m;    // mass
@@ -22,14 +23,14 @@ struct sphere
     double I;    // moment of inertia
     vec3d x;     // sphere position
     vec3d v;     // sphere velocity
+    vec3d q;     // orientation
     vec3d w;     // rotational velocity
     int flag;    // is the sphere moving or static
     // TODO: stress tensor
     sphere ();
     sphere (double, double, vec3d, vec3d);
     sphere (double, double, double, vec3d, vec3d, vec3d);
-    private:
-        void init (double, double, double, vec3d, vec3d, vec3d);
+    void init (double, double, double, vec3d, vec3d, vec3d);
 };
 
 // contains sphere interactions

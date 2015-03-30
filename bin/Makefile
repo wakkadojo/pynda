@@ -7,7 +7,6 @@ INCLUDE=-L$(ORIGIN)/lib/ -Wl,-rpath=$(ORIGIN)/lib -I$(ORIGIN)/lib -lpanda
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=test
 
-
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)

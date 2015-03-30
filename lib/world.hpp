@@ -66,7 +66,8 @@ class world
         // TODO: timestep, gather+apply impulses, save/load state
         world ();
         void add_sphere (sphere s) { spheres.push_back (s); }
-        unsigned int count_spheres () { return spheres.size (); }
+        unsigned int num_spheres () { return spheres.size (); }
+        sphere get_sphere (unsigned int i) { return spheres[i]; }
         void step ();
 };
 
