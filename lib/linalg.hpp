@@ -2,6 +2,9 @@
 #define LINALG_H
 
 #include <iostream>
+#include <cmath>
+#include <cassert>
+#include <stdexcept>
 #include <boost/serialization/serialization.hpp>
 #include "constants.hpp"
 
@@ -19,7 +22,8 @@ class vec3d
     { 
         ar & x;
     }
-    double x[d];
+    double x, y, z;
+    const static int d = 3;
     public:
         vec3d ();
         vec3d (double, double, double);
@@ -27,12 +31,11 @@ class vec3d
         void set (int, double);
         double get (int);
         double norm ();
-        int getDim ();
         // Define the two notions of multiplication for vectors
         double dot (vec3d);
         vec3d cross (vec3d);
         // Operators and such 
-        double& operator[] (const int);
+        double & operator[] (const int);
         vec3d& operator= (const vec3d&);
         vec3d operator+ (vec3d);
         vec3d operator- (vec3d);

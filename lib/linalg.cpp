@@ -1,94 +1,104 @@
-#include <cmath>
-#include <cassert>
 #include "linalg.hpp"
 
 // Vectors
 //
 
-vec3d::vec3d () { x[0] = x[1] = x[2] = 0.0; }
+vec3d::vec3d () { x = y = z = 0.0; }
 
 vec3d::vec3d (double x, double y, double z)
 {
-    this->x[0] = x; this->x[1] = y; this->x[2] = z;
+    this->x = x; this->y = y; this->z = z;
 }
 
 vec3d::vec3d (const vec3d& v)
 {
-    for (int i=0; i<d; ++i)
-        x[i] = v.x[i];
+    x = v.x;
+    y = v.y;
+    z = v.z;
 }
 
-void vec3d::set (int who, double what) { x[who] = what; }
+void vec3d::set (int who, double what) 
+{ 
+    if (who == 0)
+        x = what;
+    else if (who == 1)
+        y = what;
+    else if (who == 2)
+        z = what;
+    else
+        throw std::out_of_range ("vec3d indexes from 0 to 2");
+}
 
-double vec3d::get (int who) { return x[who]; }
+double vec3d::get (int who) 
+{ 
+    if (who == 0)
+        return x;
+    else if (who == 1)
+        return y;
+    else if (who == 2)
+        return z;
+    else
+        throw std::out_of_range ("vec3d indexes from 0 to 2");
+}
 
 double vec3d::norm () { return sqrt (this->dot (*this)); }
-
-int vec3d::getDim () { return d; }
 
 // Dot and cross products
 
 double vec3d::dot (vec3d other)
 {
-    double temp = 0.0;
-    for (int i=0; i<d; ++i)
-        temp += x[i]*other.x[i];
-    return temp;
+    return x*other.x + y*other.y + z*other.z;
 }
 
 vec3d vec3d::cross (vec3d other)
 {
-    return vec3d (x[1]*other.x[2] - x[2]*other.x[1],
-                  x[2]*other.x[0] - x[0]*other.x[2],
-                  x[0]*other.x[1] - x[1]*other.x[0]);
+    return vec3d (y*other.z - z*other.y,
+                  z*other.x - x*other.z,
+                  x*other.y - y*other.x);
 }
 
 // Operators and such
 
-double& vec3d::operator[] (const int i) 
+double& vec3d::operator[] (const int who) 
 {
-    return x[i]; 
+    if (who == 0)
+        return x;
+    else if (who == 1)
+        return y;
+    else if (who == 2)
+        return z;
+    else
+        throw std::out_of_range ("vec3d indexes from 0 to 2");
 }
 
 vec3d& vec3d::operator= (const vec3d& other)
 {
-    for (int i=0; i<d; ++i)
-        x[i] = other.x[i];
+    x = other.x;
+    y = other.y;
+    z = other.z;
     return *this;
 }
 
 vec3d vec3d::operator+ (vec3d other)
 {
-    vec3d temp;
-    for (int i=0; i<d; ++i)
-        temp.x[i] = x[i] + other.x[i];
-    return temp;
+    return vec3d (x + other.x, y + other.y, z + other.z);
 }
 
 vec3d vec3d::operator- (vec3d other)
 {
-    vec3d temp;
-    for (int i=0; i<d; ++i)
-        temp.x[i] = x[i] - other.x[i];
-    return temp;
+    return vec3d (x - other.x, y - other.y, z - other.z);
 }
 
 double vec3d::operator* (vec3d other) { return this->dot (other); }
 
 vec3d operator/ (const vec3d &self, double other)
 {
-    vec3d temp;
-    for (int i=0; i<d; ++i)
-        temp.x[i] = self.x[i]/other;
-    return temp;
+    return vec3d (self.x/other, self.y/other, self.z/other);
 }
 
 vec3d operator* (const vec3d &self, double other)
 {
-    vec3d temp;
-    for (int i=0; i<d; ++i)
-        temp.x[i] = other*self.x[i];
-    return temp;
+    return vec3d (self.x*other, self.y*other, self.z*other);
 }
 
 vec3d operator* (double other, const vec3d &self)
@@ -98,7 +108,7 @@ vec3d operator* (double other, const vec3d &self)
 
 std::ostream& operator<< (std::ostream& stream, const vec3d& vec)
 {
-    return stream << "(" << vec.x[0] << ", " << vec.x[1] << ", " << vec.x[2] << ")";
+    return stream << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
 }
 
 // End vectors
@@ -232,9 +242,7 @@ vec3d operator* (const sqm3d& mat, const vec3d& vec)
     vec3d temp;
     for (int i=0; i<d; ++i)
     {
-        temp.x[i] = 0;
-        for (int j=0; j<d; ++j)
-            temp.x[i] += mat.m[i][j]*vec.x[j];
+        temp[i] = mat.m[i][0]*vec.x + mat.m[i][1]*vec.y + mat.m[i][2]*vec.z;
     }
     return temp;
 }
