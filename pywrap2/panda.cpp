@@ -34,6 +34,8 @@ BOOST_PYTHON_MODULE (panda)
     // if these guys had return values we might have to do some memory handling fyi
     class_<io> ("io")
         .def ("save", &io::save)
+        .staticmethod ("save")
         .def ("load", &io::load)
+        .staticmethod ("load")
     ;
 }
