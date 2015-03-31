@@ -2,6 +2,7 @@
 #define WORLD_H
 
 #include <vector>
+#include <stdexcept>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
 #include "linalg.hpp"
@@ -71,7 +72,7 @@ class world
         {
             if (i < spheres.size ())
                 return spheres[i]; 
-            // throw
+            throw std::out_of_range ("vec3d indexes from 0 to 2");
         }
         void step ();
 };

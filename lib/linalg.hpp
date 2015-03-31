@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <cmath>
-#include <cassert>
 #include <stdexcept>
 #include <boost/serialization/serialization.hpp>
 #include "constants.hpp"

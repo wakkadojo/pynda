@@ -25,8 +25,7 @@ void vec3d::set (int who, double what)
         y = what;
     else if (who == 2)
         z = what;
-    else
-        throw std::out_of_range ("vec3d indexes from 0 to 2");
+    throw std::out_of_range ("vec3d indexes from 0 to 2");
 }
 
 double vec3d::get (int who) 
@@ -37,8 +36,7 @@ double vec3d::get (int who)
         return y;
     else if (who == 2)
         return z;
-    else
-        throw std::out_of_range ("vec3d indexes from 0 to 2");
+    throw std::out_of_range ("vec3d indexes from 0 to 2");
 }
 
 double vec3d::norm () { return sqrt (this->dot (*this)); }
@@ -67,8 +65,7 @@ double& vec3d::operator[] (const int who)
         return y;
     else if (who == 2)
         return z;
-    else
-        throw std::out_of_range ("vec3d indexes from 0 to 2");
+    throw std::out_of_range ("vec3d indexes from 0 to 2");
 }
 
 vec3d& vec3d::operator= (const vec3d& other)
@@ -168,7 +165,8 @@ sqm3d sqm3d::inv ()
 {
     sqm3d temp;
     double determinant = det ();
-    assert (fabs (determinant) > eps);
+    if (fabs (determinant) < eps)
+        throw std::invalid_argument ("attempted to invert singular matrix");
     for (int i=0; i<d; ++i)
         for (int j=0; j<d; ++j) 
             temp.m[j][i] = (m[(i+1)%d][(j+1)%d]*m[(i+2)%d][(j+2)%d]
