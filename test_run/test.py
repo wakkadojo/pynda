@@ -27,7 +27,7 @@ w.add_sphere (s)
 
 L = 512
 for i in range (1000):
-    for j in range (2):
+    for j in range (5):
         w.step ()
     img = 255 - numpy.zeros ((L, L, 3), numpy.uint8)
     for j in range (w.num_spheres ()):

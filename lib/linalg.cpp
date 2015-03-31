@@ -25,7 +25,8 @@ void vec3d::set (int who, double what)
         y = what;
     else if (who == 2)
         z = what;
-    throw std::out_of_range ("vec3d indexes from 0 to 2");
+    else
+        throw std::out_of_range ("vec3d indexes from 0 to 2");
 }
 
 double vec3d::get (int who) 
