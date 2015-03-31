@@ -63,6 +63,7 @@ void body_interactor::interact (sphere & si, sphere & sj)
     double fn = -(1.0+cor)*(dv*n)/(1.0/si.m + 1.0/sj.m);
     // tangential unit vector
     vec3d t = dv - (dv*n)*n; t = t/t.norm ();
+    std::cout << dv << " " << n << " " << t << std::endl;
     // This is the tangential impulse that would equalize the post-collision
     // tangential veclocities of the two colliding objects. This is the max
     // impulse that can be felt, and is throttled by Coulombic friction.

@@ -49,7 +49,7 @@ void grid::set_sphere_cells (const std::vector<sphere> & spheres) {
         if (cell < n_cells)
             cells[cell].push_back (i); // add index i to the given cell 
         // store the given sphere cell
-        sphere_cells.push_back (cell);
+        sphere_cells[i] = cell;
     }
 }
 
@@ -156,7 +156,7 @@ void world::step ()
                 if (spheres[i].v[j] < 0)
                     spheres[i].v[j] = -spheres[i].v[j];
             }
-            else if (spheres[i].x[j] < box[j] - spheres[i].r)
+            else if (spheres[i].x[j] > box[j] - spheres[i].r)
             {
                 spheres[i].x[j] = box[j] - spheres[i].r;
                 if (spheres[i].v[j] > 0)

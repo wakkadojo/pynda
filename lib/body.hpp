@@ -45,7 +45,7 @@ class body_interactor
     double mu, cor; // friction and coefficient of restitution
     public:
         // TODO: include stuck grains (m -> infinity etc)
-        body_interactor () { mu = 0; cor = 0.9; }
+        body_interactor () { mu = 0.2; cor = 0.9; }
         body_interactor (double mu, double cor) { this->mu=mu; this->cor=cor; }
         void interact (sphere &, sphere &);
 };
