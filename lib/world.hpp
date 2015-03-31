@@ -67,7 +67,12 @@ class world
         world ();
         void add_sphere (sphere s) { spheres.push_back (s); }
         unsigned int num_spheres () { return spheres.size (); }
-        sphere get_sphere (unsigned int i) { return spheres[i]; }
+        sphere get_sphere (unsigned int i) 
+        {
+            if (i < spheres.size ())
+                return spheres[i]; 
+            // throw
+        }
         void step ();
 };
 
