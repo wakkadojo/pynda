@@ -30,6 +30,7 @@ class vec3d
         void set (int, double);
         double get (int);
         double norm ();
+        unsigned int size () { return d; }
         // Define the two notions of multiplication for vectors
         double dot (vec3d);
         vec3d cross (vec3d);

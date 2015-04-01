@@ -16,6 +16,8 @@ BOOST_PYTHON_MODULE (panda)
     ;
 
     class_<vec3d> ("vec3d")
+        .def (init<>())
+        .def (init<double, double, double>())
         .def ("__getitem__", &vec3d::get)
         .def ("__setitem__", &vec3d::set)
     ;
