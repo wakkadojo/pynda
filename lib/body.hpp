@@ -12,20 +12,21 @@ struct sphere
 {
     // just needs access for saving
     friend class boost::serialization::access;
+    enum class state { moving, fixed, kill };
     template <class Archive> void serialize (Archive & ar, unsigned int version)
     {
         ar & m & r & I;
         ar & x & v & q & w;
         ar & flag;
     }
-    double m;    // mass
-    double r;    // radius
-    double I;    // moment of inertia
-    vec3d x;     // sphere position
-    vec3d v;     // sphere velocity
-    vec3d q;     // orientation
-    vec3d w;     // rotational velocity
-    int flag;    // is the sphere moving or static
+    double m;          // mass
+    double r;          // radius
+    double I;          // moment of inertia
+    vec3d x;           // sphere position
+    vec3d v;           // sphere velocity
+    vec3d q;           // orientation
+    vec3d w;           // rotational velocity
+    state flag; // how should the sphere be treated
     // TODO: stress tensor
     sphere ();
     sphere (double, double, vec3d, vec3d);

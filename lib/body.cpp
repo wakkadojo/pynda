@@ -26,7 +26,7 @@ void sphere::init (double r, double m, double I, vec3d x, vec3d v, vec3d w)
     this->x = x;
     this->v = v;
     this->w = w;
-    flag = 0;
+    flag = state::moving;
 }
 
 // End Sphere

@@ -72,7 +72,7 @@ class world
         {
             if (i < spheres.size ())
                 return spheres[i]; 
-            throw std::out_of_range ("vec3d indexes from 0 to 2");
+            throw std::out_of_range ("requested sphere outside of range");
         }
         void step ();
 };
