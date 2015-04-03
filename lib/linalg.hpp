@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <stdexcept>
+#include <vector>
 #include <boost/serialization/serialization.hpp>
 #include "constants.hpp"
 
@@ -21,21 +22,22 @@ class vec3d
     { 
         ar & x;
     }
-    double x, y, z;
     const static int d = 3;
+    double x[d];
     public:
         vec3d ();
-        vec3d (double, double, double);
+        vec3d (const double, const double, const double);
         vec3d (const vec3d&);
-        void set (int, double);
-        double get (int);
+        void set (const unsigned int, const double);
+        double get (const unsigned int) const;
         double norm ();
-        unsigned int size () { return d; }
+        std::vector<double> to_vector () const;
+        unsigned int size () const { return d; }
         // Define the two notions of multiplication for vectors
-        double dot (vec3d);
-        vec3d cross (vec3d);
+        double dot (const vec3d) const;
+        vec3d cross (const vec3d) const;
         // Operators and such 
-        double & operator[] (const int);
+        double & operator[] (const unsigned int);
         vec3d& operator= (const vec3d&);
         vec3d operator+ (vec3d);
         vec3d operator- (vec3d);

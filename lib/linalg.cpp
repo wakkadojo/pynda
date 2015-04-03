@@ -3,100 +3,91 @@
 // Vectors
 //
 
-vec3d::vec3d () { x = y = z = 0.0; }
+vec3d::vec3d () { x[0] = x[1] = x[2] = 0.0; }
 
-vec3d::vec3d (double x, double y, double z)
+vec3d::vec3d (const double x, const double y, const double z)
 {
-    this->x = x; this->y = y; this->z = z;
+    this->x[0] = x; this->x[1] = y; this->x[2] = z;
 }
 
 vec3d::vec3d (const vec3d& v)
 {
-    x = v.x;
-    y = v.y;
-    z = v.z;
+    x[0] = v.x[0]; x[1] = v.x[1]; x[2] = v.x[2];
 }
 
-void vec3d::set (int who, double what) 
+void vec3d::set (const unsigned int who, const double what)
 { 
-    if (who == 0)
-        x = what;
-    else if (who == 1)
-        y = what;
-    else if (who == 2)
-        z = what;
-    else
+    if (who >= d)
         throw std::out_of_range ("vec3d indexes from 0 to 2");
+    else
+        x[who] = what;
 }
 
-double vec3d::get (int who) 
+double vec3d::get (const unsigned int who) const
 { 
-    if (who == 0)
-        return x;
-    else if (who == 1)
-        return y;
-    else if (who == 2)
-        return z;
-    throw std::out_of_range ("vec3d indexes from 0 to 2");
+    if (who >= d)
+        throw std::out_of_range ("vec3d indexes from 0 to 2");
+    return x[who];
 }
 
 double vec3d::norm () { return sqrt (this->dot (*this)); }
 
-// Dot and cross products
-
-double vec3d::dot (vec3d other)
-{
-    return x*other.x + y*other.y + z*other.z;
+std::vector<double> vec3d::to_vector () const
+{ 
+    return std::vector<double> ({ x[0], x[1], x[2] }); 
 }
 
-vec3d vec3d::cross (vec3d other)
+// Dot and cross products
+
+double vec3d::dot (const vec3d other) const
 {
-    return vec3d (y*other.z - z*other.y,
-                  z*other.x - x*other.z,
-                  x*other.y - y*other.x);
+    return x[0]*other.x[0] + x[1]*other.x[1] + x[2]*other.x[2];
+}
+
+vec3d vec3d::cross (const vec3d other) const
+{
+    return vec3d (x[1]*other.x[2] - x[2]*other.x[1],
+                  x[2]*other.x[0] - x[0]*other.x[2],
+                  x[0]*other.x[1] - x[1]*other.x[0]);
 }
 
 // Operators and such
 
-double& vec3d::operator[] (const int who) 
+double& vec3d::operator[] (const unsigned int who)
 {
-    if (who == 0)
-        return x;
-    else if (who == 1)
-        return y;
-    else if (who == 2)
-        return z;
-    throw std::out_of_range ("vec3d indexes from 0 to 2");
+    if (who >= d)
+        throw std::out_of_range ("vec3d indexes from 0 to 2");
+    return x[who];
 }
 
 vec3d& vec3d::operator= (const vec3d& other)
 {
-    x = other.x;
-    y = other.y;
-    z = other.z;
+    x[0] = other.x[0];
+    x[1] = other.x[1];
+    x[2] = other.x[2];
     return *this;
 }
 
 vec3d vec3d::operator+ (vec3d other)
 {
-    return vec3d (x + other.x, y + other.y, z + other.z);
+    return vec3d (x[0] + other.x[0], x[1] + other.x[1], x[2] + other.x[2]);
 }
 
 vec3d vec3d::operator- (vec3d other)
 {
-    return vec3d (x - other.x, y - other.y, z - other.z);
+    return vec3d (x[0] - other.x[0], x[1] - other.x[1], x[2] - other.x[2]);
 }
 
 double vec3d::operator* (vec3d other) { return this->dot (other); }
 
 vec3d operator/ (const vec3d &self, double other)
 {
-    return vec3d (self.x/other, self.y/other, self.z/other);
+    return vec3d (self.x[0]/other, self.x[1]/other, self.x[2]/other);
 }
 
 vec3d operator* (const vec3d &self, double other)
 {
-    return vec3d (self.x*other, self.y*other, self.z*other);
+    return vec3d (self.x[0]*other, self.x[1]*other, self.x[2]*other);
 }
 
 vec3d operator* (double other, const vec3d &self)
@@ -106,7 +97,7 @@ vec3d operator* (double other, const vec3d &self)
 
 std::ostream& operator<< (std::ostream& stream, const vec3d& vec)
 {
-    return stream << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
+    return stream << "(" << vec.x[0] << ", " << vec.x[1] << ", " << vec.x[2] << ")";
 }
 
 // End vectors
@@ -241,7 +232,7 @@ vec3d operator* (const sqm3d& mat, const vec3d& vec)
     vec3d temp;
     for (int i=0; i<d; ++i)
     {
-        temp[i] = mat.m[i][0]*vec.x + mat.m[i][1]*vec.y + mat.m[i][2]*vec.z;
+        temp[i] = mat.m[i][0]*vec.x[0] + mat.m[i][1]*vec.x[1] + mat.m[i][2]*vec.x[2];
     }
     return temp;
 }
