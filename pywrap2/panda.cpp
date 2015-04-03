@@ -9,6 +9,8 @@ using namespace boost::python;
 BOOST_PYTHON_MODULE (panda)
 {
     class_<world> ("world")
+        .def (init<> ())
+        .def (init<vec3d, vec3d, body_interactor, double> ())
         .def ("add_sphere", &world::add_sphere)
         .def ("num_spheres", &world::num_spheres)
         .def ("get_sphere", &world::get_sphere)
@@ -20,6 +22,11 @@ BOOST_PYTHON_MODULE (panda)
         .def (init<double, double, double>())
         .def ("__getitem__", &vec3d::get)
         .def ("__setitem__", &vec3d::set)
+    ;
+
+    class_<body_interactor> ("body_interactor")
+        .def (init<> ())
+        .def (init<double, double> ())
     ;
 
     // begin sphere scope

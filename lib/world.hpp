@@ -66,6 +66,7 @@ class world
     public:
         // TODO: timestep, gather+apply impulses, save/load state
         world ();
+        world (const vec3d &, const vec3d &, const body_interactor &, const double &);
         void add_sphere (sphere s) { spheres.push_back (s); }
         unsigned int num_spheres () { return spheres.size (); }
         sphere get_sphere (unsigned int i) 

@@ -7,7 +7,12 @@ import random
 import cv2
 import numpy
 
-w = panda.world ()
+box = panda.vec3d (1.0, 1.0, 1.0)
+cell_size = panda.vec3d (0.2, 0.2, 0.2)
+bi = panda.body_interactor (0.5, 0.5)
+dt = 0.001
+w = panda.world (box, cell_size, bi, dt)
+
 x, v, r, m, I = panda.vec3d (), panda.vec3d (), 0.1, 0.1**2, 0.1**4/2
 
 x[0], x[1] = 0.3, 0.5

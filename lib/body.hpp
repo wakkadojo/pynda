@@ -49,6 +49,12 @@ class body_interactor
         body_interactor () { mu = 0.5; cor = 0.7; }
         body_interactor (double mu, double cor) { this->mu=mu; this->cor=cor; }
         void interact (sphere &, sphere &);
+        body_interactor& operator= (const body_interactor &other)
+        {
+            mu = other.mu;
+            cor = other.cor;
+            return *this;
+        }
 };
 
 #endif // BODY_H

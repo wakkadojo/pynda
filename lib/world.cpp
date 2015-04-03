@@ -130,9 +130,22 @@ grid::~grid ()
 
 world::world () 
 {
-    g = grid (c, box);
+    c = { 6, 6, 6 };
+    box = { 1.0, 1.0, 1.0 };
     t = 0;
     dt = 0.001; // RG/(100 U0)
+    g = grid (c, box);
+}
+
+world::world (const vec3d & box, const vec3d & cell_size, const body_interactor & bi, const double & dt) 
+{
+    this->box = box.to_vector ();
+    for (unsigned int i=0; i<cell_size.size (); ++i)
+        c[i] = (unsigned int) (1.0/cell_size.get (i) + 0.5); // integer rounding
+    this->bi = bi;
+    this->dt = dt;
+    t = 0;
+    g = grid (this->c, this->box);
 }
 
 void world::step () 
