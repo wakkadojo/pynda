@@ -10,10 +10,13 @@ BOOST_PYTHON_MODULE (panda)
 {
     class_<world> ("world")
         .def (init<> ())
-        .def (init<vec3d &, vec3d &, body_interactor &, double &> ())
+        .def (init<vec3d, body_interactor, double> ())
         .def ("add_sphere", &world::add_sphere)
         .def ("num_spheres", &world::num_spheres)
         .def ("get_sphere", &world::get_sphere)
+        .def ("add_brick", &world::add_brick)
+        .def ("num_bricks", &world::num_bricks)
+        .def ("get_brick", &world::get_brick)
         .def ("step", &world::step)
     ;
 
@@ -51,6 +54,13 @@ BOOST_PYTHON_MODULE (panda)
         ; 
     }
     // end sphere scope
+
+    class_<brick> ("brick")
+        .def (init<> ())
+        .def (init<vec3d, vec3d> ())
+        .def_readwrite ("x", &brick::x)
+        .def_readwrite ("L", &brick::L)
+    ;
 
     // if these guys had return values we might have to do some memory handling fyi
     class_<io> ("io")

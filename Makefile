@@ -4,7 +4,7 @@ pandalib:
 	cd lib; make $(MAKEFLAGS)
 
 pandabin: 
-	cd bin; make $(MAKEFLAGS) ; cd ../ ; ln -sf bin/test
+	cd bin; make $(MAKEFLAGS) ; cd ../ 
 
 pandapython:
 	cd pywrap; make $(MAKEFLAGS) ; cd ../

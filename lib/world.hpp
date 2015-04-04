@@ -57,23 +57,34 @@ class world
         ar & t & dt;
     }
     std::vector<sphere> spheres; // list of spheres
+    std::vector<brick> bricks;
     body_interactor bi; // needs forces
     double t, dt;
     std::vector<unsigned int> c = { 6, 6, 6 };
     std::vector<double> box = { 1.0, 1.0, 1.0 };
     // time stepper?
     grid g;
+    private:
+        void clean (); // remove spheres outside bounds
     public:
         // TODO: timestep, gather+apply impulses, save/load state
         world ();
-        world (const vec3d &, const vec3d &, const body_interactor &, const double &);
-        void add_sphere (sphere s) { spheres.push_back (s); }
+        world (const vec3d &, const body_interactor &, const double &);
+        void add_sphere (sphere & s) { spheres.push_back (s); }
+        void add_brick (brick & b) { bricks.push_back (b); }
         unsigned int num_spheres () { return spheres.size (); }
+        unsigned int num_bricks () { return bricks.size (); }
         sphere get_sphere (unsigned int i) 
         {
             if (i < spheres.size ())
                 return spheres[i]; 
             throw std::out_of_range ("requested sphere outside of range");
+        }
+        brick get_brick (unsigned int i) 
+        {
+            if (i < bricks.size ())
+                return bricks[i]; 
+            throw std::out_of_range ("requested brick outside of range");
         }
         void step ();
 };

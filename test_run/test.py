@@ -33,6 +33,7 @@ L = 512
 for i in range (500):
     for j in range (5):
         w.step ()
+    panda.io.save (w, str (i) + '.bin')
     img = 255 - numpy.zeros ((L, L, 3), numpy.uint8)
     for j in range (w.num_spheres ()):
         s = w.get_sphere (j)

@@ -12,13 +12,13 @@ struct sphere
 {
     // just needs access for saving
     friend class boost::serialization::access;
-    enum class state { moving, fixed, kill };
     template <class Archive> void serialize (Archive & ar, unsigned int version)
     {
         ar & m & r & I;
         ar & x & v & q & w;
         ar & flag;
     }
+    enum class state { moving, fixed, kill };
     double m;          // mass
     double r;          // radius
     double I;          // moment of inertia
@@ -32,6 +32,19 @@ struct sphere
     sphere (double, double, vec3d, vec3d);
     sphere (double, double, double, vec3d, vec3d, vec3d);
     void init (double, double, double, vec3d, vec3d, vec3d);
+};
+
+struct brick
+{
+    friend class boost::serialization::access;
+    template <class Archive> void serialize (Archive & ar, unsigned int version)
+    {
+        ar & x & L;
+    }
+    vec3d x; // center
+    vec3d L; // side lengths
+    brick ();
+    brick (vec3d x, vec3d L) { this->x = x; this->L = L; }
 };
 
 // contains sphere interactions
@@ -48,7 +61,12 @@ class body_interactor
         // TODO: include stuck grains (m -> infinity etc)
         body_interactor () { mu = 0.5; cor = 0.7; }
         body_interactor (double mu, double cor) { this->mu=mu; this->cor=cor; }
+        // sphere-sphere
         void interact (sphere &, sphere &);
+        // sphere-brick
+        void interact (sphere & s, brick & b) { interact (b, s); }
+        void interact (brick &, sphere &);
+        // aux
         body_interactor& operator= (const body_interactor &other)
         {
             mu = other.mu;

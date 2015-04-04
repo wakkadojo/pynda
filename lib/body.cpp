@@ -92,5 +92,21 @@ void body_interactor::interact (sphere & si, sphere & sj)
     // END UPDATE SPHERES
 }
 
+void body_interactor::interact (brick & b, sphere & s)
+{
+    // first check for overlap/intersection
+    for (unsigned int i=0; i<b.x.size (); ++i)
+        if (s.x[i] + s.r < b.x[i] - b.L[i]/2.0)
+        {
+            s.x[i] = b.x[i] - b.L[i]/2.0 - s.r;
+            s.v[i] = s.v[i] < 0 ? s.v[i] : -s.v[i];
+        }
+        else if (s.x[i] - s.r > b.x[i] + b.L[i]/2.0)
+        {
+            s.x[i] = b.x[i] - b.L[i]/2.0 - s.r;
+            s.v[i] = s.v[i] < 0 ? s.v[i] : -s.v[i];
+        }
+}
+
 // End Body Interactor
 // 

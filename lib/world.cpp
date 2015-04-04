@@ -137,9 +137,9 @@ world::world ()
     g = grid (c, box);
 }
 
-world::world (const vec3d & box, const vec3d & cell_size, const body_interactor & bi, const double & dt) 
+world::world (const vec3d & cell_size, const body_interactor & bi, const double & dt) 
 {
-    this->box = box.to_vector ();
+    box = { 1.0, 1.0, 1.0 };
     for (unsigned int i=0; i<cell_size.size (); ++i)
         c[i] = (unsigned int) (1.0/cell_size.get (i) + 0.5); // integer rounding
     this->bi = bi;
@@ -148,8 +148,23 @@ world::world (const vec3d & box, const vec3d & cell_size, const body_interactor 
     g = grid (this->c, this->box);
 }
 
+void world::clean () 
+{
+    std::vector<sphere> new_spheres;
+    // we know we're going to do a lot of pushing...
+    new_spheres.reserve (spheres.size ()); 
+    for (auto & s : spheres)
+        for (unsigned int i=0; i<box.size (); ++i)
+            if (s.x[i] > 0 && s.x[i] < box[i])
+                new_spheres.push_back (s);
+    spheres = std::move (new_spheres);
+}
+
 void world::step () 
 {
+    // clean up / delete spheres
+    // TODO
+
     // refresh grid grid
     g.make_grid (spheres);
 
@@ -160,28 +175,26 @@ void world::step ()
                 bi.interact (spheres[i], spheres[j]);
 
     // Put in some walls
-    for (unsigned int i=0; i<spheres.size (); ++i)
-        for (unsigned int j=0; j<box.size (); ++j)
+    for (auto & s : spheres)
+        for (unsigned int i=0; i<box.size (); ++i)
         {
-            if (spheres[i].x[j] < spheres[i].r)
+            if (s.x[i] < s.r)
             {
-                spheres[i].x[j] = spheres[i].r;
-                if (spheres[i].v[j] < 0)
-                    spheres[i].v[j] = -spheres[i].v[j];
+                s.x[i] = s.r;
+                s.v[i] = s.v[i] < 0 ? -s.v[i] : s.v[i];
             }
-            else if (spheres[i].x[j] > box[j] - spheres[i].r)
+            else if (s.x[i] > box[i] - s.r)
             {
-                spheres[i].x[j] = box[j] - spheres[i].r;
-                if (spheres[i].v[j] > 0)
-                    spheres[i].v[j] = -spheres[i].v[j];
+                s.x[i] = box[i] - s.r;
+                s.v[i] = s.v[i] > 0 ? -s.v[i] : s.v[i];
             }
         }
 
     // Position updating
-    for (auto & sphere : spheres)
+    for (auto & s : spheres)
     {
-        sphere.x = sphere.x + sphere.v*dt;
-        sphere.q = sphere.q + sphere.w*dt;
+        s.x = s.x + s.v*dt;
+        s.q = s.q + s.w*dt;
     }
 
     // Update state variable
@@ -189,4 +202,3 @@ void world::step ()
 }
 
 // End World
-//
