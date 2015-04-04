@@ -70,8 +70,8 @@ class world
         // TODO: timestep, gather+apply impulses, save/load state
         world ();
         world (const vec3d &, const body_interactor &, const double &);
-        void add_sphere (sphere & s) { spheres.push_back (s); }
-        void add_brick (brick & b) { bricks.push_back (b); }
+        void add_sphere (sphere s) { spheres.push_back (s); }
+        void add_brick (brick b) { bricks.push_back (b); }
         unsigned int num_spheres () { return spheres.size (); }
         unsigned int num_bricks () { return bricks.size (); }
         sphere get_sphere (unsigned int i) 
