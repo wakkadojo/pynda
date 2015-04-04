@@ -96,12 +96,27 @@ void body_interactor::interact (brick & b, sphere & s)
 {
     // first check for overlap/intersection
     for (unsigned int i=0; i<b.x.size (); ++i)
-        if (s.x[i] + s.r < b.x[i] - b.L[i]/2.0)
+        if (s.x[i] + s.r < b.x[i] - b.L[i]/2.0 or 
+            s.x[i] - s.r > b.x[i] + b.L[i]/2.0)
+            return; // no collision    
+
+    // it's a hit, find closest face
+    double min_dist = 2*s.r;
+    for (unsigned int i=0; i<b.x.size (); ++i)
+    {
+        double delta;
+        delta = fabs (b.x[i] - s.x[i] - b.L[i]/2.0 - s.r);
+        min_dist = delta < min_dist ? delta : min_dist;
+        delta = fabs (b.x[i] - s.x[i] + b.L[i]/2.0 + s.r);
+        min_dist = delta < min_dist ? delta : min_dist;
+    }
+    for (unsigned int i=0; i<b.x.size (); ++i)
+        if (fabs (s.x[i] + s.r - (b.x[i] - b.L[i]/2.0)) - min_dist < eps)
         {
             s.x[i] = b.x[i] - b.L[i]/2.0 - s.r;
             s.v[i] = s.v[i] < 0 ? s.v[i] : -s.v[i];
         }
-        else if (s.x[i] - s.r > b.x[i] + b.L[i]/2.0)
+        else if (fabs (s.x[i] - s.r - (b.x[i] + b.L[i]/2.0)) - min_dist < eps)
         {
             s.x[i] = b.x[i] - b.L[i]/2.0 - s.r;
             s.v[i] = s.v[i] < 0 ? s.v[i] : -s.v[i];

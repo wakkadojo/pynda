@@ -43,7 +43,7 @@ struct brick
     }
     vec3d x; // center
     vec3d L; // side lengths
-    brick ();
+    brick () { x = vec3d (); L = vec3d (); }
     brick (vec3d x, vec3d L) { this->x = x; this->L = L; }
 };
 

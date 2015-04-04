@@ -32,6 +32,13 @@ BOOST_PYTHON_MODULE (panda)
         .def (init<double, double> ())
     ;
 
+    class_<brick> ("brick")
+        .def (init<> ())
+        .def (init<vec3d, vec3d> ())
+        .def_readwrite ("x", &brick::x)
+        .def_readwrite ("L", &brick::L)
+    ;
+
     // begin sphere scope
     { 
         scope sphere_scope = class_<sphere> ("sphere")
@@ -54,13 +61,6 @@ BOOST_PYTHON_MODULE (panda)
         ; 
     }
     // end sphere scope
-
-    class_<brick> ("brick")
-        .def (init<> ())
-        .def (init<vec3d, vec3d> ())
-        .def_readwrite ("x", &brick::x)
-        .def_readwrite ("L", &brick::L)
-    ;
 
     // if these guys had return values we might have to do some memory handling fyi
     class_<io> ("io")

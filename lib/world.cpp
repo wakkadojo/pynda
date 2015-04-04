@@ -137,7 +137,7 @@ world::world ()
     g = grid (c, box);
 }
 
-world::world (const vec3d & cell_size, const body_interactor & bi, const double & dt) 
+world::world (const vec3d cell_size, const body_interactor bi, const double dt) 
 {
     box = { 1.0, 1.0, 1.0 };
     for (unsigned int i=0; i<cell_size.size (); ++i)
@@ -174,8 +174,13 @@ void world::step ()
             if (i < j)
                 bi.interact (spheres[i], spheres[j]);
 
-    // Put in some walls
-    for (auto & s : spheres)
+
+    // Interact with fixed objects
+    for (auto & s : spheres) 
+    {
+        for (auto & b : bricks)
+            bi.interact (b, s);
+        // walls
         for (unsigned int i=0; i<box.size (); ++i)
         {
             if (s.x[i] < s.r)
@@ -189,6 +194,7 @@ void world::step ()
                 s.v[i] = s.v[i] > 0 ? -s.v[i] : s.v[i];
             }
         }
+    }
 
     // Position updating
     for (auto & s : spheres)

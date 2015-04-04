@@ -7,33 +7,29 @@ import random
 import cv2
 import numpy
 
-box = panda.vec3d (1.0, 1.0, 1.0)
 cell_size = panda.vec3d (0.2, 0.2, 0.2)
 bi = panda.body_interactor (0.5, 0.5)
 dt = 0.001
-w = panda.world (box, cell_size, bi, dt)
+w = panda.world (cell_size, bi, dt)
 
-x, v, r, m, I = panda.vec3d (), panda.vec3d (), 0.1, 0.1**2, 0.1**4/2
+b = panda.brick (panda.vec3d (0.75, 0.5, 0.5), panda.vec3d (0.25, 0.25, 1.0))
+w.add_brick (b)
 
-x[0], x[1] = 0.3, 0.5
-v[0], v[1] = 1.0, 0
-omega = panda.vec3d ()
-omega[2] = 10*numpy.pi
-s = panda.sphere (r, m, I, x, v, omega)
-w.add_sphere (s)
-
-s.x[0], s.v[0], s.w[2] = 0.7, -1, 0.0
-w.add_sphere (s)
-
-s.x[0], s.x[1], s.v[0], s.v[1], s.w[2] = 0.5, 0.2, 0.5, -1, 5*numpy.pi
-w.add_sphere (s)
-
+r, m, I = 0.025, 0.025**2, 0.025**4/2
 
 L = 512
 for i in range (500):
     for j in range (5):
         w.step ()
-    panda.io.save (w, str (i) + '.bin')
+    if i % 10 == 0:
+        omegamax = 2*numpy.pi/5/r
+        omega = panda.vec3d (0, 0, omegamax*(-0.5 + random.random ()))
+        v = panda.vec3d (1.0, 0, 0)
+        x = panda.vec3d (0.25, 0.45+0.1*random.random (), 0.5)
+        s = panda.sphere (r, m, I, x, v, omega)
+        w.add_sphere (s)
+
+    # rendering
     img = 255 - numpy.zeros ((L, L, 3), numpy.uint8)
     for j in range (w.num_spheres ()):
         s = w.get_sphere (j)
@@ -46,5 +42,11 @@ for i in range (500):
                   (xs, ys), 
                   (int (xs + rs*numpy.cos (qs)), int (ys + rs*numpy.sin (qs))),
                   (0, 0, 0), 6, cv2.CV_AA)
+    for j in range (w.num_bricks ()):
+        b = w.get_brick (j)
+        x1, y1 = int ((b.x[0]-b.L[0]/2)*L), int ((b.x[1]-b.L[1]/2)*L)
+        x2, y2 = int ((b.x[0]+b.L[0]/2)*L), int ((b.x[1]+b.L[1]/2)*L)
+        cv2.rectangle (img, (x1, y1), (x2, y2), (0, 0, 0), -1, cv2.CV_AA)
+                        
     cv2.imwrite ('images/' + str (i).zfill (5) + '.png', img)
 

@@ -53,6 +53,7 @@ class world
     template <class Archive> void serialize (Archive & ar, unsigned int version)
     {
         ar & spheres;
+        ar & bricks;
         ar & bi;
         ar & t & dt;
     }
@@ -69,7 +70,7 @@ class world
     public:
         // TODO: timestep, gather+apply impulses, save/load state
         world ();
-        world (const vec3d &, const body_interactor &, const double &);
+        world (const vec3d, const body_interactor, const double);
         void add_sphere (sphere s) { spheres.push_back (s); }
         void add_brick (brick b) { bricks.push_back (b); }
         unsigned int num_spheres () { return spheres.size (); }
