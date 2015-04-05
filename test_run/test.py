@@ -19,8 +19,7 @@ r, m, I = 0.025, 0.025**2, 0.025**4/2
 
 L = 512
 for i in range (1000):
-    for j in range (5):
-        w.step ()
+    w.step (5)
     if i % 10 == 0:
         omegamax = 2*numpy.pi/5/r
         omega = panda.vec3d (0, 0, omegamax*(-0.5 + random.random ()))

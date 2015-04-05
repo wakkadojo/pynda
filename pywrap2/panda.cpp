@@ -8,6 +8,9 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE (panda)
 {
+    // for function overloading
+    void (world::*step1) (void) = &world::step;
+    void (world::*step2) (unsigned int) = &world::step;
     class_<world> ("world")
         .def (init<> ())
         .def (init<vec3d, body_interactor, double> ())
@@ -17,7 +20,8 @@ BOOST_PYTHON_MODULE (panda)
         .def ("add_brick", &world::add_brick)
         .def ("num_bricks", &world::num_bricks)
         .def ("get_brick", &world::get_brick)
-        .def ("step", &world::step)
+        .def ("step", step1)
+        .def ("step", step2)
     ;
 
     class_<vec3d> ("vec3d")
