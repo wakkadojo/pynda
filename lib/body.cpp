@@ -95,32 +95,30 @@ void body_interactor::interact (sphere & si, sphere & sj)
 void body_interactor::interact (brick & b, sphere & s)
 {
     // first check for overlap/intersection
-    for (unsigned int i=0; i<b.x.size (); ++i)
-        if (s.x[i] + s.r < b.x[i] - b.L[i]/2.0 or 
-            s.x[i] - s.r > b.x[i] + b.L[i]/2.0)
-            return; // no collision    
+    unsigned int d = b.x.size ();
 
-    // it's a hit, find closest face
-    double min_dist = 2*s.r;
-    for (unsigned int i=0; i<b.x.size (); ++i)
+    // TODO: CORNERS AND EDGES NOT HANDLED
+    for (unsigned int i=0; i<d; ++i)
     {
-        double delta;
-        delta = fabs (b.x[i] - s.x[i] - b.L[i]/2.0 - s.r);
-        min_dist = delta < min_dist ? delta : min_dist;
-        delta = fabs (b.x[i] - s.x[i] + b.L[i]/2.0 + s.r);
-        min_dist = delta < min_dist ? delta : min_dist;
+        bool within = true;
+        for (unsigned int j=i+1; j<i+d; ++j)
+            if (s.x[j%d] > b.x[j%d] + b.L[j%d]/2.0 or
+                s.x[j%d] < b.x[j%d] - b.L[j%d]/2.0)
+                within = false;
+        if (within)
+        {
+            if (fabs (s.x[i] - (b.x[i] - b.L[i]/2.0)) < s.r)
+            {
+                s.x[i] = b.x[i] - b.L[i]/2.0 - s.r;
+                s.v[i] = s.v[i] < 0 ? s.v[i] : -s.v[i];
+            }
+            else if (fabs (s.x[i] - (b.x[i] + b.L[i]/2.0)) < s.r)
+            {
+                s.x[i] = b.x[i] + b.L[i]/2.0 + s.r;
+                s.v[i] = s.v[i] > 0 ? s.v[i] : -s.v[i];
+            }
+        }
     }
-    for (unsigned int i=0; i<b.x.size (); ++i)
-        if (fabs (s.x[i] + s.r - (b.x[i] - b.L[i]/2.0)) - min_dist < eps)
-        {
-            s.x[i] = b.x[i] - b.L[i]/2.0 - s.r;
-            s.v[i] = s.v[i] < 0 ? s.v[i] : -s.v[i];
-        }
-        else if (fabs (s.x[i] - s.r - (b.x[i] + b.L[i]/2.0)) - min_dist < eps)
-        {
-            s.x[i] = b.x[i] - b.L[i]/2.0 - s.r;
-            s.v[i] = s.v[i] < 0 ? s.v[i] : -s.v[i];
-        }
 }
 
 // End Body Interactor

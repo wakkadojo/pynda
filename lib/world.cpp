@@ -155,15 +155,18 @@ void world::clean ()
     new_spheres.reserve (spheres.size ()); 
     for (auto & s : spheres)
         for (unsigned int i=0; i<box.size (); ++i)
-            if (s.x[i] > 0 && s.x[i] < box[i])
-                new_spheres.push_back (s);
+            if (s.x[i] < -s.r or s.x[i] > box[i] + s.r)
+                s.flag = sphere::state::kill;
+    for (auto & s : spheres) 
+        if (s.flag != sphere::state::kill)
+            new_spheres.push_back (s);
     spheres = std::move (new_spheres);
 }
 
 void world::step () 
 {
     // clean up / delete spheres
-    // TODO
+    clean ();
 
     // refresh grid grid
     g.make_grid (spheres);
@@ -174,13 +177,13 @@ void world::step ()
             if (i < j)
                 bi.interact (spheres[i], spheres[j]);
 
-
     // Interact with fixed objects
     for (auto & s : spheres) 
     {
         for (auto & b : bricks)
             bi.interact (b, s);
         // walls
+        /*
         for (unsigned int i=0; i<box.size (); ++i)
         {
             if (s.x[i] < s.r)
@@ -194,6 +197,7 @@ void world::step ()
                 s.v[i] = s.v[i] > 0 ? -s.v[i] : s.v[i];
             }
         }
+        */
     }
 
     // Position updating

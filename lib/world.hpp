@@ -88,6 +88,7 @@ class world
             throw std::out_of_range ("requested brick outside of range");
         }
         void step ();
+        void step (unsigned int n) { for (unsigned int i=0; i<n; ++i) step (); }
 };
 
 #endif // WORLD_H

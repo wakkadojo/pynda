@@ -18,7 +18,7 @@ w.add_brick (b)
 r, m, I = 0.025, 0.025**2, 0.025**4/2
 
 L = 512
-for i in range (500):
+for i in range (1000):
     for j in range (5):
         w.step ()
     if i % 10 == 0:
@@ -36,12 +36,13 @@ for i in range (500):
         xs, ys, rs, qs = int (s.x[0]*L), int (s.x[1]*L), int (s.r*L), s.q[2]
         color = (0, 0, 255) # BGR
         cv2.circle (img, (xs, ys), rs, color, -1, cv2.CV_AA)
-        rs = rs-3
-        cv2.circle (img, (xs, ys), rs, (0, 0, 0), 6, cv2.CV_AA)
+        re = rs/5
+        rs = rs-re
+        cv2.circle (img, (xs, ys), rs, (0, 0, 0), re, cv2.CV_AA)
         cv2.line (img, 
                   (xs, ys), 
                   (int (xs + rs*numpy.cos (qs)), int (ys + rs*numpy.sin (qs))),
-                  (0, 0, 0), 6, cv2.CV_AA)
+                  (0, 0, 0), re, cv2.CV_AA)
     for j in range (w.num_bricks ()):
         b = w.get_brick (j)
         x1, y1 = int ((b.x[0]-b.L[0]/2)*L), int ((b.x[1]-b.L[1]/2)*L)
