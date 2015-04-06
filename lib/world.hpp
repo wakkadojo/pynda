@@ -6,7 +6,6 @@
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
 #include "linalg.hpp"
-#include "constants.hpp"
 #include "body.hpp"
 
 // grid used to find particle neighbors

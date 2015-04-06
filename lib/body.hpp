@@ -5,8 +5,8 @@
 #include <iostream>
 #include <cmath>
 #include <boost/serialization/serialization.hpp>
-#include "constants.hpp"
 #include "linalg.hpp"
+#include "utils.hpp"
 
 struct sphere
 {

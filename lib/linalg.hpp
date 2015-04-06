@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <vector>
 #include <boost/serialization/serialization.hpp>
-#include "constants.hpp"
+#include "utils.hpp"
 
 // * WARNING: I don't think the copy constructors do a deep copy. Never tested.
 // * Could make more general by using templates, but... meh.
@@ -22,7 +22,7 @@ class vec3d
     { 
         ar & x;
     }
-    const static int d = 3;
+    const static unsigned int d = constants::d;
     double x[d];
     public:
         vec3d ();
@@ -52,6 +52,7 @@ class vec3d
 
 class sqm3d
 {
+    const static unsigned int d = constants::d;
     double m[d][d];
     public: 
         sqm3d ();

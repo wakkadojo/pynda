@@ -108,8 +108,8 @@ std::ostream& operator<< (std::ostream& stream, const vec3d& vec)
 sqm3d::sqm3d ()
 {
     double m[d][d];
-    for (int i=0; i<d; ++i)
-        for (int j=0; j<d; ++j)
+    for (unsigned int i=0; i<d; ++i)
+        for (unsigned int j=0; j<d; ++j)
             m[i][j] = 0.0;
     set (m);
 }
@@ -126,8 +126,8 @@ sqm3d::sqm3d (const sqm3d& other)
 
 void sqm3d::set (const double m[][d])
 {
-    for (int i=0; i<d; ++i)
-        for (int j=0; j<d; ++j)
+    for (unsigned int i=0; i<d; ++i)
+        for (unsigned int j=0; j<d; ++j)
             this->m[i][j] = m[i][j];
 } 
 
@@ -147,8 +147,8 @@ double sqm3d::det ()
 sqm3d sqm3d::transpose ()
 {
     sqm3d temp;
-    for (int i=0; i<d; ++i)
-        for (int j=0; j<d; ++j)
+    for (unsigned int i=0; i<d; ++i)
+        for (unsigned int j=0; j<d; ++j)
             temp.m[i][j] = m[j][i];
     return temp;
 }
@@ -157,10 +157,10 @@ sqm3d sqm3d::inv ()
 {
     sqm3d temp;
     double determinant = det ();
-    if (fabs (determinant) < eps)
+    if (fabs (determinant) < constants::eps)
         throw std::invalid_argument ("attempted to invert singular matrix");
-    for (int i=0; i<d; ++i)
-        for (int j=0; j<d; ++j) 
+    for (unsigned int i=0; i<d; ++i)
+        for (unsigned int j=0; j<d; ++j) 
             temp.m[j][i] = (m[(i+1)%d][(j+1)%d]*m[(i+2)%d][(j+2)%d]
                 - m[(i+1)%d][(j+2)%d]*m[(i+2)%d][(j+1)%d])/determinant;
     return temp;    
@@ -177,8 +177,8 @@ sqm3d& sqm3d::operator= (const sqm3d& other)
 sqm3d sqm3d::operator+ (sqm3d other)
 {
     sqm3d temp;
-    for (int i=0; i<d; ++i)
-        for (int j=0; j<d; ++j)
+    for (unsigned int i=0; i<d; ++i)
+        for (unsigned int j=0; j<d; ++j)
             temp.m[i][j] = this->m[i][j] + other.m[i][j];
     return temp;
 }
@@ -191,12 +191,12 @@ sqm3d sqm3d::operator- (sqm3d other)
 sqm3d sqm3d::operator* (sqm3d other)
 {
     sqm3d temp;
-    for (int i=0; i<d; ++i)
+    for (unsigned int i=0; i<d; ++i)
     {
-        for (int j=0; j<d; ++j)
+        for (unsigned int j=0; j<d; ++j)
         {
             temp.m[i][j] = 0.0;
-            for (int k=0; k<d; ++k)
+            for (unsigned int k=0; k<d; ++k)
                 temp.m[i][j] += m[i][k]*other.m[k][j];
         }
     }
@@ -206,8 +206,8 @@ sqm3d sqm3d::operator* (sqm3d other)
 sqm3d operator* (double other, const sqm3d& mat)
 {
     sqm3d temp;
-    for (int i=0; i<d; ++i)
-        for (int j=0; j<d; ++j)
+    for (unsigned int i=0; i<sqm3d::d; ++i)
+        for (unsigned int j=0; j<sqm3d::d; ++j)
             temp.m[i][j] = other*mat.m[i][j];
     return temp;
 }
@@ -230,7 +230,7 @@ sqm3d operator/ (double other, const sqm3d& mat)
 vec3d operator* (const sqm3d& mat, const vec3d& vec)
 {
     vec3d temp;
-    for (int i=0; i<d; ++i)
+    for (unsigned int i=0; i<sqm3d::d; ++i)
     {
         temp[i] = mat.m[i][0]*vec.x[0] + mat.m[i][1]*vec.x[1] + mat.m[i][2]*vec.x[2];
     }
@@ -246,13 +246,13 @@ vec3d operator* (const vec3d& vec, const sqm3d& mat)
 std::ostream& operator<< (std::ostream& stream, const sqm3d& mat)
 {
     stream << std::endl;
-    for (int i=0; i<d; ++i)
+    for (unsigned int i=0; i<sqm3d::d; ++i)
     {
         stream << "(";
-        for (int j=0; j<d; ++j)
+        for (unsigned int j=0; j<sqm3d::d; ++j)
         {
             stream << mat.m[i][j];
-            if (j < d-1) stream << ",\t";
+            if (j < sqm3d::d-1) stream << ",\t";
         }
         stream << ")" << std::endl;
     }
