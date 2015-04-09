@@ -152,7 +152,7 @@ void body_interactor::interact (brick & b, sphere & s)
             }
 
     }
-    // corners
+    // corners not implemented, but corner collisions should be extremely rare anyway
 }
 
 // End Body Interactor
