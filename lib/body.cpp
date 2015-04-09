@@ -94,10 +94,10 @@ void body_interactor::interact (sphere & si, sphere & sj)
 
 void body_interactor::interact (brick & b, sphere & s)
 {
-    // first check for overlap/intersection
-    unsigned int d = b.x.size ();
+    // edges and corners can be computationally intensive, maybe don't check?
+    unsigned int d = constants::d;
 
-    // TODO: CORNERS AND EDGES NOT HANDLED
+    // Main faces
     for (unsigned int i=0; i<d; ++i)
     {
         bool within = true;
@@ -119,6 +119,40 @@ void body_interactor::interact (brick & b, sphere & s)
             }
         }
     }
+    // edges -- doo all aligned with x, y, z axes in each main loop
+    // each edge is the segment between two corners, and each loop uses all 8 corners
+    for (unsigned int i=0; i<d; ++i)
+    {
+        vec3d t, u, v; 
+        t[i] = u[(i+1)%d] = v[(i+2)%d] = 1;
+        // always start with respect to bottom-left edge
+        // edges are between c_i and c_i+1
+        std::vector<vec3d> c = {vec3d (), vec3d (), vec3d (), vec3d (),
+                                vec3d (), vec3d (), vec3d (), vec3d ()};
+        c[0] = b.x - b.L/2.0;         c[1] = c[0] + b.L[i]*t;
+        c[2] = c[0] + b.L[(i+1)%d]*u; c[3] = c[2] + b.L[i]*t;
+        c[4] = c[0] + b.L[(i+2)%d]*v; c[5] = c[4] + b.L[i]*t;
+        c[6] = c[2] + b.L[(i+2)%d]*v; c[7] = c[6] + b.L[i]*t;
+        for (unsigned int j=0; j<c.size ()/2; ++j)
+            // whether or not in between two points in t axis
+            if (s.x[i] > c[2*j][i] and s.x[i] < c[2*j+1][i])
+            {
+                // distance from the sphere to one of the line points
+                vec3d a = c[2*j] - s.x;
+                vec3d p = a - (a*t)*t; // shortest vector pointing from sphere to line
+                double distance = p.norm (); // distance from edge
+                if (distance < s.r) // collision
+                {
+                    vec3d n = p/distance; // normal vector pointing toward sphere
+                    // realign so touching edge
+                    s.x = s.x - (s.r - distance)*n;
+                    // reverse speed
+                    s.v = s.v*n > 0 ? s.v - 2*(s.v*n)*n : s.v; 
+                }
+            }
+
+    }
+    // corners
 }
 
 // End Body Interactor

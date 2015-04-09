@@ -13,4 +13,4 @@ pandapython2:
 	cd pywrap2; make $(MAKEFLAGS) ; cd ../
 
 clean:
-	cd bin; make clean; cd ../lib; make clean; cd ../pywrap; make clean; cd ../pywrap2; make clean; cd ../; rm test 
+	cd bin; make clean; cd ../lib; make clean; cd ../pywrap; make clean; cd ../pywrap2; make clean; cd ../
