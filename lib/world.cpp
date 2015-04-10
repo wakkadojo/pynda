@@ -31,6 +31,7 @@ grid::grid (std::vector<unsigned int> c, std::vector<double> box)
 void grid::set_sphere_cells (const std::vector<sphere> & spheres) {
     sphere_cells = std::vector<unsigned int> (spheres.size ());
     cells = std::vector<std::vector<unsigned int>> (n_cells);
+
     // iterate through all spheres and place them on the cell grid
     for (unsigned int i=0; i<spheres.size (); ++i)
     {
@@ -45,11 +46,16 @@ void grid::set_sphere_cells (const std::vector<sphere> & spheres) {
             cell += (unsigned int) (x[j]*c[j]/box[j])*mult;
             mult *= c[j];
         }
-        // only add to cells if it was in our box
-        if (cell < n_cells)
-            cells[cell].push_back (i); // add index i to the given cell 
         // store the given sphere cell
         sphere_cells[i] = cell;
+    }
+
+    for (unsigned int i=0; i<spheres.size (); ++i)
+    {
+        // only add to cells if it was in our box
+        unsigned int cell = sphere_cells[i];
+        if (cell < n_cells)
+            cells[cell].push_back (i); // add index i to the given cell 
     }
 }
 
@@ -63,7 +69,7 @@ void grid::set_search_cells () {
         // should be a recursive algorithm that finds 3 cells and calls 3 more
         // of itself etc to generate the cell list. But perhaps implement this
         // after the simulation is up and working.
-        unsigned int center_cells [3]; // index of center cell in 3d
+        unsigned int center_cells [3] = {0, 0, 0}; // index of center cell in 3d
         unsigned int mult = 1;
         for (unsigned int j=0; j<c.size (); ++j)
         {
@@ -155,7 +161,7 @@ void world::clean ()
     new_spheres.reserve (spheres.size ()); 
     for (auto & s : spheres)
         for (unsigned int i=0; i<box.size (); ++i)
-            if (s.x[i] < -s.r or s.x[i] > box[i] + s.r)
+            if (s.x[i] < 0 or s.x[i] > box[i])
                 s.flag = sphere::state::kill;
     for (auto & s : spheres) 
         if (s.flag != sphere::state::kill)

@@ -119,7 +119,7 @@ void body_interactor::interact (brick & b, sphere & s)
             }
         }
     }
-    // edges -- doo all aligned with x, y, z axes in each main loop
+    // edges -- do all aligned with x, y, z axes in each main loop
     // each edge is the segment between two corners, and each loop uses all 8 corners
     for (unsigned int i=0; i<d; ++i)
     {
@@ -152,7 +152,7 @@ void body_interactor::interact (brick & b, sphere & s)
             }
 
     }
-    // corners
+    // corners not implemented
 }
 
 // End Body Interactor
