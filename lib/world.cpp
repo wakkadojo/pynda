@@ -25,13 +25,12 @@ grid::grid (std::vector<unsigned int> c, std::vector<double> box)
         n_cells *= c[i];
     
     // mark which cells should be searched for each cell
-    cells = std::vector<std::vector<unsigned int>> (n_cells);
     set_search_cells ();
 }
 
 void grid::set_sphere_cells (const std::vector<sphere> & spheres) {
     sphere_cells = std::vector<unsigned int> (spheres.size ());
-    cells.clear ();
+    cells = std::vector<std::vector<unsigned int>> (n_cells);
 
     // iterate through all spheres and place them on the cell grid
     for (unsigned int i=0; i<spheres.size (); ++i)
