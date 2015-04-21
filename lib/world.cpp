@@ -169,6 +169,40 @@ void world::clean ()
     spheres = std::move (new_spheres);
 }
 
+void world::add_sphere (sphere s) 
+{ 
+    spheres.push_back (s); 
+}
+
+void world::add_brick (brick b) 
+{ 
+    bricks.push_back (b); 
+}
+
+unsigned int world::num_spheres () 
+{ 
+    return spheres.size (); 
+}
+
+unsigned int world::num_bricks () 
+{ 
+    return bricks.size (); 
+}
+
+sphere world::get_sphere (unsigned int i) 
+{
+    if (i < spheres.size ())
+        return spheres[i]; 
+    throw std::out_of_range ("requested sphere outside of range");
+}
+
+brick world::get_brick (unsigned int i) 
+{
+    if (i < bricks.size ())
+        return bricks[i]; 
+    throw std::out_of_range ("requested brick outside of range");
+}
+
 void world::step () 
 {
     // clean up / delete spheres
@@ -215,6 +249,12 @@ void world::step ()
 
     // Update state variable
     t += dt;
+}
+
+void world::step (unsigned int n)
+{
+    for (unsigned int i=0; i<n; ++i)
+        step ();
 }
 
 // End World

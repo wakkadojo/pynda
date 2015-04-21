@@ -1,5 +1,5 @@
-#ifndef WORLD_H
-#define WORLD_H
+#ifndef WORLD_HPP
+#define WORLD_HPP
 
 #include <vector>
 #include <stdexcept>
@@ -70,24 +70,14 @@ class world
         // TODO: timestep, gather+apply impulses, save/load state
         world ();
         world (const vec3d, const body_interactor, const double);
-        void add_sphere (sphere s) { spheres.push_back (s); }
-        void add_brick (brick b) { bricks.push_back (b); }
-        unsigned int num_spheres () { return spheres.size (); }
-        unsigned int num_bricks () { return bricks.size (); }
-        sphere get_sphere (unsigned int i) 
-        {
-            if (i < spheres.size ())
-                return spheres[i]; 
-            throw std::out_of_range ("requested sphere outside of range");
-        }
-        brick get_brick (unsigned int i) 
-        {
-            if (i < bricks.size ())
-                return bricks[i]; 
-            throw std::out_of_range ("requested brick outside of range");
-        }
+        void add_sphere (sphere);
+        void add_brick (brick);
+        unsigned int num_spheres ();
+        unsigned int num_bricks ();
+        sphere get_sphere (unsigned int);
+        brick get_brick (unsigned int);
         void step ();
-        void step (unsigned int n) { for (unsigned int i=0; i<n; ++i) step (); }
+        void step (unsigned int);
 };
 
-#endif // WORLD_H
+#endif // WORLD_HPP

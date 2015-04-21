@@ -1,5 +1,5 @@
-#ifndef LINALG_H
-#define LINALG_H
+#ifndef LINALG_HPP
+#define LINALG_HPP
 
 #include <iostream>
 #include <cmath>
@@ -77,4 +77,4 @@ class sqm3d
         friend std::ostream& operator<< (std::ostream&, const sqm3d&);
 };
 
-#endif // LINALG_H
+#endif // LINALG_HPP

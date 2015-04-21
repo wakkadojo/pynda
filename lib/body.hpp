@@ -1,5 +1,5 @@
-#ifndef BODY_H
-#define BODY_H
+#ifndef BODY_HPP
+#define BODY_HPP
 
 #include <vector>
 #include <iostream>
@@ -67,12 +67,7 @@ class body_interactor
         void interact (sphere & s, brick & b) { interact (b, s); }
         void interact (brick &, sphere &);
         // aux
-        body_interactor& operator= (const body_interactor &other)
-        {
-            mu = other.mu;
-            cor = other.cor;
-            return *this;
-        }
+        body_interactor& operator= (const body_interactor &);
 };
 
-#endif // BODY_H
+#endif // BODY_HPP

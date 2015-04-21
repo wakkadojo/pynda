@@ -155,5 +155,13 @@ void body_interactor::interact (brick & b, sphere & s)
     // corners
 }
 
+// copy constructor
+body_interactor& body_interactor::operator= (const body_interactor &other)
+{
+            mu = other.mu;
+            cor = other.cor;
+            return *this;
+}
+
 // End Body Interactor
 // 

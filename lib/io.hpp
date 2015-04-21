@@ -1,5 +1,5 @@
-#ifndef IO_H
-#define IO_H
+#ifndef IO_HPP
+#define IO_HPP
 
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
@@ -14,4 +14,4 @@ class io
         static world load (std::string);
 };
 
-#endif // IO_H
+#endif // IO_HPP
