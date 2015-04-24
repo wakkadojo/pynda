@@ -48,6 +48,8 @@ class grid
 // Handles tracking spheres and finding neighbors etc
 class world
 {
+    // should choose timestep according to dt <= R/(100*U), and grid L ~ 2R
+
     friend class boost::serialization::access;
     template <class Archive> void serialize (Archive & ar, unsigned int version)
     {
@@ -63,9 +65,15 @@ class world
     std::vector<unsigned int> c = { 6, 6, 6 };
     std::vector<double> box = { 1.0, 1.0, 1.0 };
     // time stepper?
+    // if a timestep and grid size is set oorrectly, then the grid should not need
+    // to be updated more than once every 100 steps, since that should be the 
+    // minimum time for spheres to leave cells.
+    const unsigned int grid_update_steps = 50;
+    unsigned int grid_step_counter;
     grid g;
     private:
-        void clean (); // remove spheres outside bounds
+        void update_flags (); // update sphere flags i.e. based on box boundaries
+        void clean (); // remove spheres flagged for deletion
     public:
         // TODO: timestep, gather+apply impulses, save/load state
         world ();
