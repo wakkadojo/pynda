@@ -28,6 +28,50 @@ grid::grid (std::vector<unsigned int> c, std::vector<double> box)
     set_search_cells ();
 }
 
+void grid::add (const sphere & s, const unsigned int index)
+{
+    if (index != sphere_cells.size () + 1)
+        throw std::out_of_range ("bad book-keeping: number of spheres does not match number in grid");
+    unsigned int cell = get_sphere_cell (s);
+    sphere_cells.push_back (cell);
+    cells[cell].push_back (index);
+    neighbors.push_back (std::vector<unsigned int> ());
+    for (auto adj_cell : search_cells[cell])
+        for (auto & neighbor : cells[adj_cell])
+            if (neighbor != index) // dont add self to neighbor list
+            {
+                neighbors[index].push_back (neighbor);
+                neighbors[neighbor].push_back (index);
+            }
+}
+
+void grid::remove (const unsigned int index)
+{
+    
+}
+
+void grid::update (const unsigned int index)
+{
+
+}
+
+unsigned int grid::get_sphere_cell (const sphere & s)
+{
+    // if the sphere is in the box, this cell number will be in 
+    // the range [0, n_cells]
+    unsigned int cell = 0;
+    unsigned int mult = 1;
+    for (unsigned int i=0; i<c.size (); ++i)
+    {
+        vec3d x = s.x; // so can use non-const ref
+        if (x[i] < 0 or x[i] > box[i])
+            throw std::out_of_range ("sphere position is outside box");
+        cell += (unsigned int) (x[i]*c[i]/box[i])*mult;
+        mult *= c[i];
+    }
+    return cell;
+}
+
 void grid::set_sphere_cells (const std::vector<sphere> & spheres) {
     // In this function we do not add spheres to the search path if they are marked
     // to be deleted. This is one step so a deleted/ingorable sphere won't interact
@@ -40,28 +84,16 @@ void grid::set_sphere_cells (const std::vector<sphere> & spheres) {
     // iterate through all spheres and place them on the cell grid
     for (unsigned int i=0; i<spheres.size (); ++i)
     {
-        // the box lengths are box, and extend from -l/2 to l/2 (eg)
-        unsigned int cell = 0;
-        unsigned int mult = 1;
-        for (unsigned int j=0; j<c.size (); ++j)
-        {
-            // if the sphere is in the box, this cell number will be in 
-            // the range [0, n_cells]
-            vec3d x = spheres[i].x; // make this guy so we can pass spheres as const
-            cell += (unsigned int) (x[j]*c[j]/box[j])*mult;
-            mult *= c[j];
-        }
         // store the given sphere cell
-        sphere_cells[i] = cell;
+        sphere_cells[i] = get_sphere_cell (spheres[i]);
     }
 
     for (unsigned int i=0; i<spheres.size (); ++i)
     {
         // only add to cells if it was in our box
         unsigned int cell = sphere_cells[i];
-        if (cell < n_cells)
-            if (spheres[i].flag != sphere::state::kill) // only look if not deletable
-                cells[cell].push_back (i); // add index i to the given cell 
+        if (spheres[i].flag != sphere::state::kill) // only look if not deletable
+            cells[cell].push_back (i); // add index i to the given cell 
     }
 }
 
@@ -103,8 +135,7 @@ void grid::set_search_cells () {
     }
 }
 
-// TODO: Modularize, save "search cells", clean up, test
-void grid::make_grid (const std::vector<sphere> & spheres)
+void grid::complete_refresh(const std::vector<sphere> & spheres)
 {
     // in this function, like in set_sphere_cells, we have a check to make sure that
     // a sphere that's going to be deleted/killed does not have a chance to interact
@@ -129,7 +160,7 @@ void grid::make_grid (const std::vector<sphere> & spheres)
                         neighbors[i].push_back (neighbor);
 }
 
-std::vector<unsigned int> grid::get_neighbors (unsigned int i)
+std::vector<unsigned int> grid::get_neighbors (const unsigned int i)
 {
     return neighbors[i];
 }
@@ -232,7 +263,7 @@ void world::step ()
     {
         clean (); // THIS IS WHERE SPHERES ARE REMOVED
         grid_step_counter = 0;
-        g.make_grid (spheres); // rebuild the grid based on cleaned up spheres
+        g.complete_refresh (spheres); // rebuild the grid based on cleaned up spheres
     }
 
     // Sphere interactions, TODO: continuous forces
