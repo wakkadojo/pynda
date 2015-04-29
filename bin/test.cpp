@@ -18,7 +18,7 @@ int main (void)
         {
             std::stringstream filename;
             filename << "states/state" << i/100 << ".bin";
-            io::save (w, filename.str ());
+            w.save (filename.str ());
         }
     }
     
