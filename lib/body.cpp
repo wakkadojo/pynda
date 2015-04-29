@@ -40,17 +40,20 @@ void sphere::init (double r, double m, double I, vec3d x, vec3d v, vec3d w)
 // generally, this function should NOT be called if spheres are not interacting
 void body_interactor::interact (sphere & si, sphere & sj)
 {
-    // The normal vector, used for both impulse and offset
+    // points from 1 to 2
     vec3d dx = sj.x - si.x;
-    vec3d n = dx/dx.norm (); // points from 1 to 2
 
+    if (dx*dx < (si.r + sj.r)*(si.r + sj.r))
+        return;
+
+    // The normal vector, used for both impulse and offset
+    double dx_n = dx.norm ();
+    vec3d n = dx/dx_n; 
     // SPHERE OFFSETS
     // offset about the center of mass
     // the amount they are overlapping is the amount we wish to offset them
-    double s = si.r + sj.r - dx.norm ();
     // NOTICE do not interact if not in contact
-    if (s < 0)
-        return;
+    double s = si.r + sj.r - dx_n;
 
     vec3d dxi = -(sj.m*s/(si.m + sj.m))*n;
     vec3d dxj =  (si.m*s/(si.m + sj.m))*n;
@@ -62,7 +65,9 @@ void body_interactor::interact (sphere & si, sphere & sj)
     // normal impulse
     double fn = -(1.0+cor)*(dv*n)/(1.0/si.m + 1.0/sj.m);
     // tangential unit vector
-    vec3d t = dv - (dv*n)*n; t = t.norm () > constants::eps ? t/t.norm () : t;
+    vec3d t = dv - (dv*n)*n; 
+    double t_n = t.norm ();
+    t = t_n > constants::eps ? t/t_n : t;
     // This is the tangential impulse that would equalize the post-collision
     // tangential veclocities of the two colliding objects. This is the max
     // impulse that can be felt, and is throttled by Coulombic friction.
