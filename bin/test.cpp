@@ -2,7 +2,6 @@
 #include <sstream>
 #include <world.hpp>
 #include <linalg.hpp>
-#include <io.hpp>
 
 int main (void)
 {
