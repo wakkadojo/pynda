@@ -1,6 +1,5 @@
 #include <world.hpp>
 #include <body.hpp>
-#include <io.hpp>
 #include <linalg.hpp>
 #include <boost/python.hpp>
 
