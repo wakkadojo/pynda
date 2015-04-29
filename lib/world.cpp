@@ -86,7 +86,7 @@ unsigned int grid::get_sphere_cell (const sphere & s)
     return cell;
 }
 
-void grid::set_sphere_cells (const std::vector<sphere> & spheres) {
+void grid::complete_refresh (const std::vector<sphere> & spheres) {
 
     sphere_cells = std::vector<unsigned int> (spheres.size ());
     cells = std::vector<std::vector<unsigned int>> (n_cells);
@@ -144,16 +144,6 @@ void grid::set_search_cells () {
     }
 }
 
-void grid::complete_refresh(const std::vector<sphere> & spheres)
-{
-    if (n_cells == 0)
-        std::cerr << "WARNING: did not properly initialize grid" << std::endl;
-   
-    // update cell location for each sphere
-    set_sphere_cells (spheres);
-
-}
-
 std::vector<unsigned int> grid::get_neighbors (const unsigned int i)
 {
     std::vector<unsigned int> neighbors;
@@ -197,6 +187,22 @@ world::world (const vec3d cell_size, const body_interactor bi, const double dt)
     t = 0;
     g = grid (this->c, this->box);
     grid_step_counter = 0;
+}
+
+void world::save (std::string filename)
+{
+    std::ofstream os (filename);
+    boost::archive::binary_oarchive oa (os);
+    oa << *this;
+}
+
+void world::load (std::string filename)
+{
+    std::ifstream is (filename);
+    boost::archive::binary_iarchive ia (is);
+    ia >> *this;
+    // regenerate grid
+    g.complete_refresh (spheres); 
 }
 
 void world::update_flags () 

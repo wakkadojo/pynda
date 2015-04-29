@@ -14,6 +14,8 @@ BOOST_PYTHON_MODULE (panda)
     class_<world> ("world")
         .def (init<> ())
         .def (init<vec3d, body_interactor, double> ())
+        .def ("save", &world::save)
+        .def ("load", &world::load)
         .def ("add_sphere", &world::add_sphere)
         .def ("num_spheres", &world::num_spheres)
         .def ("get_sphere", &world::get_sphere)
@@ -25,8 +27,8 @@ BOOST_PYTHON_MODULE (panda)
     ;
 
     class_<vec3d> ("vec3d")
-        .def (init<>())
-        .def (init<double, double, double>())
+        .def (init<> ())
+        .def (init<double, double, double> ())
         .def ("__getitem__", &vec3d::get)
         .def ("__setitem__", &vec3d::set)
     ;
@@ -65,12 +67,4 @@ BOOST_PYTHON_MODULE (panda)
         ; 
     }
     // end sphere scope
-
-    // if these guys had return values we might have to do some memory handling fyi
-    class_<io> ("io")
-        .def ("save", &io::save)
-        .staticmethod ("save")
-        .def ("load", &io::load)
-        .staticmethod ("load")
-    ;
 }

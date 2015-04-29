@@ -1,10 +1,14 @@
 #ifndef WORLD_HPP
 #define WORLD_HPP
 
-#include <vector>
-#include <stdexcept>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <string>
+#include <fstream>
+#include <vector>
+#include <stdexcept>
 #include "linalg.hpp"
 #include "body.hpp"
 
@@ -27,8 +31,6 @@ class grid
         unsigned int get_sphere_cell (const sphere &);
         // sets which cells to look in for overlaps, should be called in constructor
         void set_search_cells ();
-        // set cell # for spheres and also mark which cells have spheres
-        void set_sphere_cells (const std::vector<sphere> &);
     public:
         grid ();
         grid (std::vector<unsigned int>, std::vector<double>);
@@ -80,6 +82,8 @@ class world
         // TODO: timestep, gather+apply impulses, save/load state
         world ();
         world (const vec3d, const body_interactor, const double);
+        void save (std::string);
+        void load (std::string);
         void add_sphere (sphere);
         void add_brick (brick);
         unsigned int num_spheres ();
