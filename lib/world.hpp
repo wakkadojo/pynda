@@ -14,8 +14,6 @@ class grid
     unsigned int n_cells;
     // stores the occupying particle indexes in each cell
     std::vector<std::vector<unsigned int>> cells;
-    // stores the neighbors of each particle
-    std::vector<std::vector<unsigned int>> neighbors; 
     // which cells should be searched for each given center cell
     std::vector<std::vector<unsigned int>> search_cells; 
     // cell numbers of the spheres
@@ -38,9 +36,9 @@ class grid
         // adding spheres without recomputing entire grid
         void add (const sphere &, const unsigned int);
         // removing spheres without recomputing entire grid
-        void remove (const unsigned int);
+        void remove (const sphere &, const unsigned int);
         // update the grid info for a given index
-        void update (const unsigned int);
+        void update (const sphere &, const unsigned int);
         // get neighbors of a sphere
         std::vector<unsigned int> get_neighbors (const unsigned int); 
         // make grid and neighbor list from scratch

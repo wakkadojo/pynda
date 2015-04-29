@@ -26,33 +26,47 @@ grid::grid (std::vector<unsigned int> c, std::vector<double> box)
     
     // mark which cells should be searched for each cell
     set_search_cells ();
+
+    // need initial grid refresh
+    complete_refresh (std::vector<sphere> ());
 }
 
 void grid::add (const sphere & s, const unsigned int index)
 {
-    if (index != sphere_cells.size () + 1)
+    if (index != sphere_cells.size ())
         throw std::out_of_range ("bad book-keeping: number of spheres does not match number in grid");
     unsigned int cell = get_sphere_cell (s);
     sphere_cells.push_back (cell);
     cells[cell].push_back (index);
-    neighbors.push_back (std::vector<unsigned int> ());
-    for (auto adj_cell : search_cells[cell])
-        for (auto & neighbor : cells[adj_cell])
-            if (neighbor != index) // dont add self to neighbor list
+}
+
+void grid::remove (const sphere & s, const unsigned int index)
+{
+    unsigned int cell = sphere_cells[index];
+    helpers::remove_element (cells[cell], index);
+    sphere_cells.erase (sphere_cells.begin () + index); // pops everyone back down one
+    // need to update all indexes larger than or equal to index
+    for (unsigned int i=index; i<sphere_cells.size (); ++i)
+        for (unsigned int & j : cells[sphere_cells[i]])
+            if (j == i+1) // correct everyone for the pop that happened above
             {
-                neighbors[index].push_back (neighbor);
-                neighbors[neighbor].push_back (index);
+                j--;
+                break;
             }
 }
 
-void grid::remove (const unsigned int index)
+void grid::update (const sphere & s, const unsigned int index)
 {
-    
-}
-
-void grid::update (const unsigned int index)
-{
-
+    unsigned int old_cell = sphere_cells[index];
+    unsigned int cell = get_sphere_cell (s);
+    if (cell != old_cell)
+    {
+        // remove old info
+        helpers::remove_element (cells[old_cell], index);
+        // update new info
+        sphere_cells[index] = cell;
+        cells[cell].push_back (index);
+    }
 }
 
 unsigned int grid::get_sphere_cell (const sphere & s)
@@ -73,10 +87,6 @@ unsigned int grid::get_sphere_cell (const sphere & s)
 }
 
 void grid::set_sphere_cells (const std::vector<sphere> & spheres) {
-    // In this function we do not add spheres to the search path if they are marked
-    // to be deleted. This is one step so a deleted/ingorable sphere won't interact
-    // with the rest of the spheres and also won't give errors for out of bounds
-
 
     sphere_cells = std::vector<unsigned int> (spheres.size ());
     cells = std::vector<std::vector<unsigned int>> (n_cells);
@@ -92,8 +102,7 @@ void grid::set_sphere_cells (const std::vector<sphere> & spheres) {
     {
         // only add to cells if it was in our box
         unsigned int cell = sphere_cells[i];
-        if (spheres[i].flag != sphere::state::kill) // only look if not deletable
-            cells[cell].push_back (i); // add index i to the given cell 
+        cells[cell].push_back (i); // add index i to the given cell 
     }
 }
 
@@ -137,32 +146,24 @@ void grid::set_search_cells () {
 
 void grid::complete_refresh(const std::vector<sphere> & spheres)
 {
-    // in this function, like in set_sphere_cells, we have a check to make sure that
-    // a sphere that's going to be deleted/killed does not have a chance to interact
-    // with the other spheres, or give an error for having a bad cell number.
-
     if (n_cells == 0)
         std::cerr << "WARNING: did not properly initialize grid" << std::endl;
    
     // update cell location for each sphere
     set_sphere_cells (spheres);
 
-    // clear and initiate neighbor list
-    neighbors = std::vector<std::vector<unsigned int>> (spheres.size ());
-
-    // now go through the cells to construct the neighbor list
-    // for now, this handles the monodisperse case
-    for (unsigned int i=0; i<spheres.size (); ++i)
-        if (spheres[i].flag != sphere::state::kill) // don't procede for deletable
-            for (auto adj_cell : search_cells[sphere_cells[i]])
-                for (auto & neighbor : cells[adj_cell])
-                    if (neighbor != i) // dont add self to neighbor list
-                        neighbors[i].push_back (neighbor);
 }
 
 std::vector<unsigned int> grid::get_neighbors (const unsigned int i)
 {
-    return neighbors[i];
+    std::vector<unsigned int> neighbors;
+
+    // now go through the cells to construct the neighbor list
+    for (auto adj_cell : search_cells[sphere_cells[i]])
+        for (auto neighbor : cells[adj_cell])
+            if (neighbor != i) // dont add self to neighbor list
+                neighbors.push_back (neighbor);
+    return neighbors;
 }
 
 grid::~grid ()
@@ -208,17 +209,21 @@ void world::update_flags ()
 
 void world::clean ()
 {
-    std::vector<sphere> new_spheres;
-    // we know we're going to do a lot of pushing...
-    new_spheres.reserve (spheres.size ()); 
-    for (auto & s : spheres) 
-        if (s.flag != sphere::state::kill)
-            new_spheres.push_back (s);
-    spheres = std::move (new_spheres);
+    if (not spheres.empty ())
+        for (int i=spheres.size ()-1; i>=0; --i)
+        {
+            if (spheres[i].flag == sphere::state::kill)
+            {
+                // have to remove from grid before remove from spheres
+                g.remove (spheres[i], i);
+                spheres.erase (spheres.begin () + i);
+            }
+        }
 }
 
 void world::add_sphere (sphere s) 
 { 
+    g.add (s, spheres.size ());
     spheres.push_back (s); 
 }
 
@@ -257,14 +262,11 @@ void world::step ()
 
     // update sphere flags
     update_flags ();
+    // clean up and remove rogue spheres
+    clean (); 
 
-    // refresh grid grid
-    if (grid_step_counter++ > grid_update_steps)
-    {
-        clean (); // THIS IS WHERE SPHERES ARE REMOVED
-        grid_step_counter = 0;
-        g.complete_refresh (spheres); // rebuild the grid based on cleaned up spheres
-    }
+    for (unsigned int i=0; i<spheres.size (); ++i)
+        g.update (spheres[i], i);
 
     // Sphere interactions, TODO: continuous forces
     for (unsigned int i=0; i<spheres.size (); ++i)
@@ -277,6 +279,7 @@ void world::step ()
     {
         for (auto & b : bricks)
             bi.interact (b, s);
+
         // walls
         /*
         for (unsigned int i=0; i<box.size (); ++i)
