@@ -60,13 +60,14 @@ class world
         ar & spheres;
         ar & bricks;
         ar & bi;
+        ar & c & box;
         ar & t & dt;
     }
     std::vector<sphere> spheres; // list of spheres
     std::vector<brick> bricks;
     body_interactor bi; // needs forces
     double t, dt;
-    std::vector<unsigned int> c = { 6, 6, 6 };
+    std::vector<unsigned int> c = { 0, 0, 0 };
     std::vector<double> box = { 1.0, 1.0, 1.0 };
     // time stepper?
     // if a timestep and grid size is set oorrectly, then the grid should not need
