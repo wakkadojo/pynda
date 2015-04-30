@@ -22,6 +22,9 @@ class grid
     std::vector<std::vector<unsigned int>> search_cells; 
     // cell numbers of the spheres
     std::vector<unsigned int> sphere_cells; 
+    // indexes of all neighbors of each particle
+    std::vector<std::vector<unsigned int>> neighbors;
+    const static unsigned int neighbor_reserve = 10; // max neighbors we expect
     // the length of each dimension, centered at 0
     std::vector<double> box;
     // number of cells in each dimension

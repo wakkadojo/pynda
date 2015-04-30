@@ -37,6 +37,13 @@ void grid::add (const sphere & s, const unsigned int index)
         throw std::out_of_range ("bad book-keeping: number of spheres does not match number in grid");
     unsigned int cell = get_sphere_cell (s);
     sphere_cells.push_back (cell);
+    // now go through the cells to construct the neighbor list
+    neighbors.push_back (std::vector<unsigned int> ());
+    neighbors.reserve (neighbor_reserve);
+    for (unsigned int adj_cell : search_cells[cell])
+        for (unsigned int neighbor : cells[adj_cell])
+            // don't need to check if neighber == index since index not in grid yet
+            neighbors[index].push_back (neighbor);
     cells[cell].push_back (index);
 }
 
@@ -53,6 +60,17 @@ void grid::remove (const sphere & s, const unsigned int index)
                 j--;
                 break;
             }
+
+    // clean up neighbors by decrementing everyone above and removing our target
+    // use fact that a ~ b --> b ~ a, search nearby guys and update neighbor info
+    for (unsigned int & neighbor : neighbors[index])
+        helpers::remove_element (neighbors[neighbor], index);
+    // update all indexes of everyone accounting for the incoming shift (diff from above)
+    for (unsigned int i=0; i<neighbors.size (); ++i)
+        for (unsigned int & j : neighbors[i])
+            if (j > index)
+                j--;
+    neighbors.erase (neighbors.begin () + index); // pops everyone down one
 }
 
 void grid::update (const sphere & s, const unsigned int index)
@@ -66,6 +84,11 @@ void grid::update (const sphere & s, const unsigned int index)
         // update new info
         sphere_cells[index] = cell;
         cells[cell].push_back (index);
+        neighbors[index].clear ();
+        for (unsigned int adj_cell : search_cells[cell])
+            for (unsigned int neighbor : cells[adj_cell])
+                if (neighbor != index)
+                    neighbors[index].push_back (neighbor);
     }
 }
 
@@ -90,6 +113,7 @@ void grid::complete_refresh (const std::vector<sphere> & spheres) {
 
     sphere_cells = std::vector<unsigned int> (spheres.size ());
     cells = std::vector<std::vector<unsigned int>> (n_cells);
+    neighbors = std::vector<std::vector<unsigned int>> ();
 
     // iterate through all spheres and place them on the cell grid
     for (unsigned int i=0; i<spheres.size (); ++i)
@@ -103,6 +127,15 @@ void grid::complete_refresh (const std::vector<sphere> & spheres) {
         // only add to cells if it was in our box
         unsigned int cell = sphere_cells[i];
         cells[cell].push_back (i); // add index i to the given cell 
+    }
+
+    for (unsigned int i=0; i<neighbors.size (); ++i)
+    {
+        neighbors[i].reserve (neighbor_reserve);
+        for (unsigned int adj_cell : search_cells[sphere_cells[i]])
+            for (unsigned int neighbor : cells[adj_cell])
+                if (neighbor != i)
+                    neighbors[i].push_back (neighbor);
     }
 }
 
@@ -146,14 +179,7 @@ void grid::set_search_cells () {
 
 std::vector<unsigned int> grid::get_neighbors (const unsigned int i)
 {
-    std::vector<unsigned int> neighbors;
-
-    // now go through the cells to construct the neighbor list
-    for (auto adj_cell : search_cells[sphere_cells[i]])
-        for (auto neighbor : cells[adj_cell])
-            if (neighbor != i) // dont add self to neighbor list
-                neighbors.push_back (neighbor);
-    return neighbors;
+    return neighbors[i];
 }
 
 grid::~grid ()
@@ -207,7 +233,7 @@ void world::load (std::string filename)
 
 void world::update_flags () 
 {
-    for (auto & s : spheres)
+    for (sphere & s : spheres)
         for (unsigned int i=0; i<box.size (); ++i)
             if (s.x[i] < 0 or s.x[i] > box[i])
                 s.flag = sphere::state::kill;
@@ -281,9 +307,9 @@ void world::step ()
                 bi.interact (spheres[i], spheres[j]);
 
     // Interact with fixed objects
-    for (auto & s : spheres) 
+    for (sphere & s : spheres) 
     {
-        for (auto & b : bricks)
+        for (brick & b : bricks)
             bi.interact (b, s);
 
         // walls
@@ -305,7 +331,7 @@ void world::step ()
     }
 
     // Position updating
-    for (auto & s : spheres)
+    for (sphere & s : spheres)
     {
         s.x = s.x + s.v*dt;
         s.q = s.q + s.w*dt;
