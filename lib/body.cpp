@@ -43,7 +43,7 @@ void body_interactor::interact (sphere & si, sphere & sj)
     // points from 1 to 2
     vec3d dx = sj.x - si.x;
 
-    if (dx*dx < (si.r + sj.r)*(si.r + sj.r))
+    if (dx*dx > (si.r + sj.r)*(si.r + sj.r))
         return;
 
     // The normal vector, used for both impulse and offset

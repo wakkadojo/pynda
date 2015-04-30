@@ -1,7 +1,7 @@
 CC=g++
 RM=rm
 # Libaray
-CFLAGS=-fPIC -m64 -O2 -std=c++11 -Wall
+CFLAGS=-fPIC -m64 -O2 -std=c++11 -Wall -g
 LDFLAGS=-shared
 INCLUDE=-lboost_serialization
 SOURCES=world.cpp body.cpp linalg.cpp

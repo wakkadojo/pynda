@@ -1,6 +1,6 @@
 CC=g++
 RM=rm
-CFLAGS=-fPIC -m64 -O2 -std=c++11 -Wall
+CFLAGS=-fPIC -m64 -O2 -std=c++11 -Wall -g
 LDFLAGS=-shared
 SOURCES=panda.cpp
 ORIGIN=$(shell cd ../ && pwd)
