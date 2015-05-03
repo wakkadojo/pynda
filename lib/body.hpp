@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <stdexcept>
 #include <boost/serialization/serialization.hpp>
 #include "linalg.hpp"
 #include "utils.hpp"
@@ -57,6 +58,9 @@ class body_interactor
         ar & mu & cor; 
     }
     double mu, cor; // friction and coefficient of restitution
+    private:
+        void one_moving_interact (sphere &, sphere &);
+        void two_moving_interact (sphere &, sphere &);
     public:
         // TODO: include stuck grains (m -> infinity etc)
         body_interactor () { mu = 0.5; cor = 0.7; }

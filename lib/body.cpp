@@ -35,15 +35,15 @@ void sphere::init (double r, double m, double I, vec3d x, vec3d v, vec3d w)
 // Body Interactor
 //
 
-// Returns interaction response from bodies. The response will contain no 
-// offsets and forces if the spheres are not overlapping/interacting, but 
-// generally, this function should NOT be called if spheres are not interacting
-void body_interactor::interact (sphere & si, sphere & sj)
+void body_interactor::one_moving_interact (sphere & si, sphere & sj)
 {
+    if (si.flag != sphere::state::moving or sj.flag != sphere::state::fixed)
+        throw std::invalid_argument ("one_moving_interact needs first sphere moving and second sphere fixed");
+
     // points from 1 to 2
     vec3d dx = sj.x - si.x;
 
-    if (dx*dx > (si.r + sj.r)*(si.r + sj.r))
+    if (dx*dx + constants::eps > (si.r + sj.r)*(si.r + sj.r))
         return;
 
     // The normal vector, used for both impulse and offset
@@ -52,7 +52,6 @@ void body_interactor::interact (sphere & si, sphere & sj)
     // SPHERE OFFSETS
     // offset about the center of mass
     // the amount they are overlapping is the amount we wish to offset them
-    // NOTICE do not interact if not in contact
     double s = si.r + sj.r - dx_n;
 
     vec3d dxi = -(sj.m*s/(si.m + sj.m))*n;
@@ -62,6 +61,7 @@ void body_interactor::interact (sphere & si, sphere & sj)
     // COLLISION IMPULSE
     // speed difference
     vec3d dv = si.v + si.r*si.w.cross (n) - (sj.v - sj.r*sj.w.cross (n));
+    
     // normal impulse
     double fn = -(1.0+cor)*(dv*n)/(1.0/si.m + 1.0/sj.m);
     // tangential unit vector
@@ -95,6 +95,69 @@ void body_interactor::interact (sphere & si, sphere & sj)
     si.w = si.w + si.r*n.cross (f)/si.I; // could alt. use n.cross (t)*ft
     sj.w = sj.w + sj.r*n.cross (f)/sj.I; // double negative
     // END UPDATE SPHERES
+}
+void body_interactor::two_moving_interact (sphere & si, sphere & sj)
+{
+    // points from 1 to 2
+    vec3d dx = sj.x - si.x;
+
+    if (dx*dx + constants::eps > (si.r + sj.r)*(si.r + sj.r))
+        return;
+
+    // The normal vector, used for both impulse and offset
+    double dx_n = dx.norm ();
+    vec3d n = dx/dx_n; 
+    // SPHERE OFFSETS
+    // offset about the center of mass
+    // the amount they are overlapping is the amount we wish to offset them
+    double s = si.r + sj.r - dx_n;
+
+    vec3d dxi = -(sj.m*s/(si.m + sj.m))*n;
+    vec3d dxj =  (si.m*s/(si.m + sj.m))*n;
+    // END SPHERE OFFSETS
+
+    // COLLISION IMPULSE
+    // speed difference
+    vec3d dv = si.v + si.r*si.w.cross (n) - (sj.v - sj.r*sj.w.cross (n));
+    
+    // normal impulse
+    double fn = -(1.0+cor)*(dv*n)/(1.0/si.m + 1.0/sj.m);
+    // tangential unit vector
+    vec3d t = dv - (dv*n)*n; 
+    double t_n = t.norm ();
+    t = t_n > constants::eps ? t/t_n : t;
+    // This is the tangential impulse that would equalize the post-collision
+    // tangential veclocities of the two colliding objects. This is the max
+    // impulse that can be felt, and is throttled by Coulombic friction.
+    double ft_match_velocity = -1.0*(dv*t)/(1.0/si.m + 1.0/sj.m + si.r*si.r/si.I + sj.r*sj.r/sj.I);
+    double sign_ft_match_velocity = ft_match_velocity > 0.0 ? 1.0 : -1.0;
+    // tangential impulse. track sign of the impulse here since we use fabs
+    double ft = fabs (ft_match_velocity) < mu*fabs (fn) ? 
+        ft_match_velocity : sign_ft_match_velocity*fabs (fn)*mu;
+    vec3d f = fn*n + ft*t;
+    // END COLLISION IMPULSE
+    
+    // not be called if particles are not overlapping, but we'll be extra safe
+    dxi = s > 0 ? dxi : vec3d ();
+    dxj = s > 0 ? dxj : vec3d ();
+    f   = s > 0 ? f : vec3d ();
+
+    // UPDATE SPHERES
+    // position
+    si.x = si.x + dxi;
+    sj.x = sj.x + dxj;
+    // translational velocity
+    si.v = si.v + f/si.m;
+    sj.v = sj.v - f/sj.m;
+    // angular velocity
+    si.w = si.w + si.r*n.cross (f)/si.I; // could alt. use n.cross (t)*ft
+    sj.w = sj.w + sj.r*n.cross (f)/sj.I; // double negative
+    // END UPDATE SPHERES
+}
+
+void body_interactor::interact (sphere & si, sphere & sj)
+{
+    two_moving_interact (si, sj);
 }
 
 void body_interactor::interact (brick & b, sphere & s)
