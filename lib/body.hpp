@@ -47,30 +47,4 @@ struct brick
     brick (vec3d x, vec3d L) { this->x = x; this->L = L; }
 };
 
-// contains sphere interactions
-// TODO: function pointers and custom interaction functions (sticking)
-class body_interactor
-{
-    friend class boost::serialization::access;
-    template <class Archive> void serialize (Archive & ar, unsigned int version)
-    { 
-        ar & mu & cor; 
-    }
-    double mu, cor; // friction and coefficient of restitution
-    private:
-        void one_moving_interact (sphere &, sphere &);
-        void two_moving_interact (sphere &, sphere &);
-    public:
-        // TODO: include stuck grains (m -> infinity etc)
-        body_interactor () { mu = 0.5; cor = 0.7; }
-        body_interactor (double mu, double cor) { this->mu=mu; this->cor=cor; }
-        // sphere-sphere
-        void interact (sphere &, sphere &);
-        // sphere-brick
-        void interact (sphere & s, brick & b) { interact (b, s); }
-        void interact (brick &, sphere &);
-        // aux
-        body_interactor& operator= (const body_interactor &);
-};
-
 #endif // BODY_HPP

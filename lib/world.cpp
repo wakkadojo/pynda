@@ -10,7 +10,7 @@ world::world ()
     grid_step_counter = 0;
 }
 
-world::world (const vec3d cell_size, const body_interactor bi, const double dt) 
+world::world (const vec3d cell_size, const interactor bi, const double dt) 
 {
     box = { 1.0, 1.0, 1.0 };
     for (unsigned int i=0; i<cell_size.size (); ++i)

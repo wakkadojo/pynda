@@ -1,10 +1,6 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 
-#include <boost/serialization/serialization.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
 #include <string>
 #include <fstream>
 #include <vector>

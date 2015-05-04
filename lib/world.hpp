@@ -29,7 +29,7 @@ class world
     }
     std::vector<sphere> spheres; // list of spheres
     std::vector<brick> bricks;
-    body_interactor bi; // needs forces
+    interactor bi; // needs forces
     double t, dt;
     std::vector<unsigned int> c = { 0, 0, 0 };
     std::vector<double> box = { 1.0, 1.0, 1.0 };
@@ -46,7 +46,7 @@ class world
     public:
         // TODO: timestep, gather+apply impulses, save/load state
         world ();
-        world (const vec3d, const body_interactor, const double);
+        world (const vec3d, const interactor, const double);
         void save (std::string);
         void load (std::string);
         void add_sphere (sphere);
