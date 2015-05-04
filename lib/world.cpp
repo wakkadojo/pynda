@@ -40,10 +40,13 @@ void grid::add (const sphere & s, const unsigned int index)
     // now go through the cells to construct the neighbor list
     neighbors.push_back (std::vector<unsigned int> ());
     neighbors.reserve (neighbor_reserve);
-    for (unsigned int adj_cell : search_cells[cell])
-        for (unsigned int neighbor : cells[adj_cell])
+    for (const unsigned int & adj_cell : search_cells[cell])
+        for (const unsigned int & neighbor : cells[adj_cell])
+        {
             // don't need to check if neighber == index since index not in grid yet
             neighbors[index].push_back (neighbor);
+            neighbors[neighbor].push_back (index);
+        }
     cells[cell].push_back (index);
 }
 
@@ -63,14 +66,14 @@ void grid::remove (const sphere & s, const unsigned int index)
 
     // clean up neighbors by decrementing everyone above and removing our target
     // use fact that a ~ b --> b ~ a, search nearby guys and update neighbor info
-    for (unsigned int & neighbor : neighbors[index])
+    for (const unsigned int & neighbor : neighbors[index])
         helpers::remove_element (neighbors[neighbor], index);
+    neighbors.erase (neighbors.begin () + index); // pops everyone down one
     // update all indexes of everyone accounting for the incoming shift (diff from above)
-    for (unsigned int i=0; i<neighbors.size (); ++i)
-        for (unsigned int & j : neighbors[i])
+    for (std::vector<unsigned int> & neighbor_vec : neighbors)
+        for (unsigned int & j : neighbor_vec)
             if (j > index)
                 j--;
-    neighbors.erase (neighbors.begin () + index); // pops everyone down one
 }
 
 void grid::update (const sphere & s, const unsigned int index)
@@ -81,14 +84,19 @@ void grid::update (const sphere & s, const unsigned int index)
     {
         // remove old info
         helpers::remove_element (cells[old_cell], index);
+        for (const unsigned int & neighbor : neighbors[index])
+            helpers::remove_element (neighbors[neighbor], index);
         // update new info
         sphere_cells[index] = cell;
         cells[cell].push_back (index);
         neighbors[index].clear ();
-        for (unsigned int adj_cell : search_cells[cell])
-            for (unsigned int neighbor : cells[adj_cell])
+        for (const unsigned int & adj_cell : search_cells[cell])
+            for (const unsigned int & neighbor : cells[adj_cell])
                 if (neighbor != index)
+                {
                     neighbors[index].push_back (neighbor);
+                    neighbors[neighbor].push_back (index);
+                }
     }
 }
 
@@ -109,6 +117,7 @@ unsigned int grid::get_sphere_cell (const sphere & s)
     return cell;
 }
 
+// TODO deprecated
 void grid::complete_refresh (const std::vector<sphere> & spheres) {
 
     sphere_cells = std::vector<unsigned int> (spheres.size ());

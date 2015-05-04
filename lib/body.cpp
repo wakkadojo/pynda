@@ -40,7 +40,7 @@ void body_interactor::one_moving_interact (sphere & si, sphere & sj)
     if (si.flag != sphere::state::moving or sj.flag != sphere::state::fixed)
         throw std::invalid_argument ("one_moving_interact needs first sphere moving and second sphere fixed");
 
-    // points from 1 to 2
+    // points from i to j
     vec3d dx = sj.x - si.x;
 
     if (dx*dx + constants::eps > (si.r + sj.r)*(si.r + sj.r))
@@ -53,9 +53,7 @@ void body_interactor::one_moving_interact (sphere & si, sphere & sj)
     // offset about the center of mass
     // the amount they are overlapping is the amount we wish to offset them
     double s = si.r + sj.r - dx_n;
-
-    vec3d dxi = -(sj.m*s/(si.m + sj.m))*n;
-    vec3d dxj =  (si.m*s/(si.m + sj.m))*n;
+    vec3d dxi = -s*n;
     // END SPHERE OFFSETS
 
     // COLLISION IMPULSE
@@ -63,7 +61,7 @@ void body_interactor::one_moving_interact (sphere & si, sphere & sj)
     vec3d dv = si.v + si.r*si.w.cross (n) - (sj.v - sj.r*sj.w.cross (n));
     
     // normal impulse
-    double fn = -(1.0+cor)*(dv*n)/(1.0/si.m + 1.0/sj.m);
+    double fn = -si.m*(1.0+cor)*(dv*n);
     // tangential unit vector
     vec3d t = dv - (dv*n)*n; 
     double t_n = t.norm ();
@@ -71,7 +69,7 @@ void body_interactor::one_moving_interact (sphere & si, sphere & sj)
     // This is the tangential impulse that would equalize the post-collision
     // tangential veclocities of the two colliding objects. This is the max
     // impulse that can be felt, and is throttled by Coulombic friction.
-    double ft_match_velocity = -1.0*(dv*t)/(1.0/si.m + 1.0/sj.m + si.r*si.r/si.I + sj.r*sj.r/sj.I);
+    double ft_match_velocity = -1.0*(dv*t)/(1.0/si.m + si.r*si.r/si.I);
     double sign_ft_match_velocity = ft_match_velocity > 0.0 ? 1.0 : -1.0;
     // tangential impulse. track sign of the impulse here since we use fabs
     double ft = fabs (ft_match_velocity) < mu*fabs (fn) ? 
@@ -81,27 +79,24 @@ void body_interactor::one_moving_interact (sphere & si, sphere & sj)
     
     // not be called if particles are not overlapping, but we'll be extra safe
     dxi = s > 0 ? dxi : vec3d ();
-    dxj = s > 0 ? dxj : vec3d ();
     f   = s > 0 ? f : vec3d ();
 
-    // UPDATE SPHERES
+    // UPDATE MOVING SPHERE
     // position
     si.x = si.x + dxi;
-    sj.x = sj.x + dxj;
     // translational velocity
     si.v = si.v + f/si.m;
-    sj.v = sj.v - f/sj.m;
     // angular velocity
     si.w = si.w + si.r*n.cross (f)/si.I; // could alt. use n.cross (t)*ft
-    sj.w = sj.w + sj.r*n.cross (f)/sj.I; // double negative
-    // END UPDATE SPHERES
+    // END UPDATE MOVING SPHERE
 }
+
 void body_interactor::two_moving_interact (sphere & si, sphere & sj)
 {
-    // points from 1 to 2
+    // points from i to j
     vec3d dx = sj.x - si.x;
 
-    if (dx*dx + constants::eps > (si.r + sj.r)*(si.r + sj.r))
+    if (dx*dx > (si.r + sj.r)*(si.r + sj.r))
         return;
 
     // The normal vector, used for both impulse and offset
@@ -157,7 +152,12 @@ void body_interactor::two_moving_interact (sphere & si, sphere & sj)
 
 void body_interactor::interact (sphere & si, sphere & sj)
 {
-    two_moving_interact (si, sj);
+    if (si.flag == sphere::state::moving and sj.flag == sphere::state::moving)
+        two_moving_interact (si, sj);
+    else if (si.flag == sphere::state::fixed and sj.flag == sphere::state::moving)
+        one_moving_interact (sj, si);
+    else if (si.flag == sphere::state::moving and sj.flag == sphere::state::fixed)
+        one_moving_interact (si, sj);
 }
 
 void body_interactor::interact (brick & b, sphere & s)

@@ -17,8 +17,12 @@ w.add_brick (b)
 
 r, m, I = 0.025, 0.025**2, 0.025**4/2
 
+s = panda.sphere (r, m, I, panda.vec3d (0.5, 0.5, 0.5), panda.vec3d (), panda.vec3d (0.0, 0.0, 10.0))
+s.flag = panda.sphere.state.fixed
+w.add_sphere (s)
+
 L = 512
-for i in range (1000):
+for i in range (500):
     w.step (5)
     print 'step ' + str (i) + ' ' + str (w.num_spheres ())
     if i % 10 == 0:
