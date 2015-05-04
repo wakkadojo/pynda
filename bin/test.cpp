@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <world.hpp>
+#include <interactor.hpp>
 #include <linalg.hpp>
 #include <body.hpp>
 
@@ -15,7 +16,7 @@ int main (void)
     double r_av = R/25;
     double dt = r_av/100; // dt = 0.01 * R / U0
     vec3d cell_size (3.0*r_av, 3.0*r_av, 1.0);
-    body_interactor bi (0.2, 0.9);
+    interactor bi (0.2, 0.9);
     world w (cell_size, bi, dt);
     unsigned int num_steps = 1000;
     unsigned int N_b = 0;

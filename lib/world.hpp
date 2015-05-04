@@ -24,7 +24,7 @@ class world
         ar & spheres;
         ar & bricks;
         ar & bi;
-        ar & c & box;
+        ar & c & min_box & max_box;
         ar & t & dt;
     }
     std::vector<sphere> spheres; // list of spheres
@@ -32,7 +32,8 @@ class world
     interactor bi; // needs forces
     double t, dt;
     std::vector<unsigned int> c = { 0, 0, 0 };
-    std::vector<double> box = { 1.0, 1.0, 1.0 };
+    std::vector<double> min_box = { -0.5, -0.5, -0.5 };
+    std::vector<double> max_box = {  0.5,  0.5,  0.5 };
     // time stepper?
     // if a timestep and grid size is set oorrectly, then the grid should not need
     // to be updated more than once every 100 steps, since that should be the 

@@ -4,18 +4,18 @@ grid::grid ()
 {
     // just set everything to something trivial
     c = { 1, 1, 1 };
-    box = { 1.0, 1.0, 1.0 };
     n_cells = 0; // make sure it crashes later... we don't want these parameters
 }
 
-grid::grid (std::vector<unsigned int> c, std::vector<double> box)
+grid::grid (std::vector<unsigned int> c, std::vector<double> min_box, std::vector<double> max_box)
 {
     /**
      * 1. Only get search cells for cells with spheres, make warning note about that
      * 2. Eliminate having too many class variables -- only need them if we later decide to save grid between steps
      */
     this->c = c;
-    this->box = box;
+    this->min_box = min_box;
+    this->max_box = max_box;
 
     n_cells = 1;
     for (unsigned int i=0; i<c.size (); ++i)
@@ -106,9 +106,9 @@ unsigned int grid::get_sphere_cell (const sphere & s)
     for (unsigned int i=0; i<c.size (); ++i)
     {
         vec3d x = s.x; // so can use non-const ref
-        if (x[i] < 0 or x[i] > box[i])
+        if (x[i] < min_box[i] or x[i] > max_box[i])
             throw std::out_of_range ("sphere position is outside box");
-        cell += (unsigned int) (x[i]*c[i]/box[i])*mult;
+        cell += (unsigned int) ((x[i] - min_box[i])*c[i]/(max_box[i]-min_box[i]))*mult;
         mult *= c[i];
     }
     return cell;

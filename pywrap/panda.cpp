@@ -1,6 +1,7 @@
 #include <world.hpp>
 #include <body.hpp>
 #include <linalg.hpp>
+#include <interactor.hpp>
 #include <boost/python.hpp>
 
 using namespace boost::python;
@@ -12,7 +13,7 @@ BOOST_PYTHON_MODULE (panda)
     void (world::*step2) (unsigned int) = &world::step;
     class_<world> ("world")
         .def (init<> ())
-        .def (init<vec3d, body_interactor, double> ())
+        .def (init<vec3d, interactor, double> ())
         .def ("save", &world::save)
         .def ("load", &world::load)
         .def ("add_sphere", &world::add_sphere)
@@ -32,7 +33,7 @@ BOOST_PYTHON_MODULE (panda)
         .def ("__setitem__", &vec3d::set)
     ;
 
-    class_<body_interactor> ("body_interactor")
+    class_<interactor> ("interactor")
         .def (init<> ())
         .def (init<double, double> ())
     ;

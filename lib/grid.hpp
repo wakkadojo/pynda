@@ -22,7 +22,8 @@ class grid
     std::vector<std::vector<unsigned int>> neighbors;
     const static unsigned int neighbor_reserve = 10; // max neighbors we expect
     // the length of each dimension, centered at 0
-    std::vector<double> box;
+    std::vector<double> min_box = { -0.5, -0.5, -0.5 };
+    std::vector<double> max_box = {  0.5,  0.5,  0.5 };
     // number of cells in each dimension
     std::vector<unsigned int> c;
     private:
@@ -32,7 +33,7 @@ class grid
         void set_search_cells ();
     public:
         grid ();
-        grid (std::vector<unsigned int>, std::vector<double>);
+        grid (std::vector<unsigned int>, std::vector<double>, std::vector<double>);
         // adding spheres without recomputing entire grid
         void add (const sphere &, const unsigned int);
         // removing spheres without recomputing entire grid

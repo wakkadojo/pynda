@@ -30,8 +30,6 @@ class interactor
         // sphere-brick
         void interact (sphere & s, brick & b) { interact (b, s); }
         void interact (brick &, sphere &);
-        // aux
-        interactor& operator= (const interactor &);
 };
 
 #endif // INTERACTOR_HPP

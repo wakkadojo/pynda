@@ -3,22 +3,21 @@
 world::world () 
 {
     c = { 6, 6, 6 };
-    box = { 1.0, 1.0, 1.0 };
     t = 0;
     dt = 0.001; // RG/(100 U0)
-    g = grid (c, box);
+    g = grid (c, min_box, max_box);
     grid_step_counter = 0;
 }
 
 world::world (const vec3d cell_size, const interactor bi, const double dt) 
 {
-    box = { 1.0, 1.0, 1.0 };
     for (unsigned int i=0; i<cell_size.size (); ++i)
-        c[i] = (unsigned int) (1.0/cell_size.get (i) + 0.5); // integer rounding
+        // integer rounding
+        c[i] = (unsigned int) ((max_box[i]-min_box[i])/cell_size.get (i) + 0.5); 
     this->bi = bi;
     this->dt = dt;
     t = 0;
-    g = grid (this->c, this->box);
+    g = grid (c, min_box, max_box);
     grid_step_counter = 0;
 }
 
@@ -41,8 +40,8 @@ void world::load (std::string filename)
 void world::update_flags () 
 {
     for (sphere & s : spheres)
-        for (unsigned int i=0; i<box.size (); ++i)
-            if (s.x[i] < 0 or s.x[i] > box[i])
+        for (unsigned int i=0; i<min_box.size (); ++i)
+            if (s.x[i] < min_box[i] or s.x[i] > max_box[i])
                 s.flag = sphere::state::kill;
 }
 
