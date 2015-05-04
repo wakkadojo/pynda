@@ -44,7 +44,6 @@ class world
         void update_flags (); // update sphere flags i.e. based on box boundaries
         void clean (); // remove spheres flagged for deletion
     public:
-        // TODO: timestep, gather+apply impulses, save/load state
         world ();
         world (const vec3d, const interactor, const double);
         void save (std::string);
