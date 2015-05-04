@@ -4,7 +4,7 @@ RM=rm
 CFLAGS=-fPIC -m64 -O0 -std=c++11 -Wall -g
 LDFLAGS=-shared
 INCLUDE=-lboost_serialization
-SOURCES=world.cpp body.cpp linalg.cpp
+SOURCES=world.cpp body.cpp linalg.cpp interactor.cpp grid.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 LIBRARY=libpanda.so
 

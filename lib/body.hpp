@@ -7,7 +7,6 @@
 #include <stdexcept>
 #include <boost/serialization/serialization.hpp>
 #include "linalg.hpp"
-#include "utils.hpp"
 
 struct sphere
 {
