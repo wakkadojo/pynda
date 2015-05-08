@@ -53,8 +53,8 @@ Now, we make the world and add the spheres
 
 Now we can run it and see where the spheres are going!
 
-    for _ in range (100):
-        w.step (10)
+    for _ in range (50):
+        w.step (100)
         for i in range (w.num_spheres ()):
             s = w.get_sphere (i)
             print ('Sphere ' + str (i+1) + ': ' + str (s.x[0]) + ' ' + str (s.x[1]) + ' ' + str (x[2]))
