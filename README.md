@@ -39,13 +39,14 @@ First, lets make some spheres
     m = 4*pi*r**3/3.0 # sphere mass
     u0 = 1.0          # initial speed
     # sphere arguments: r, m, I, position, velocity, angular velocity
+    # vec3d is part of an optimized vector library
     s1 = panda.sphere (r, m, I, panda.vec3d (-0.25,  r/4.0, 0.0), panda.vec3d ( u0, 0.0, 0.0), panda.vec3d ())
     s2 = panda.sphere (r, m, I, panda.vec3d ( 0.25, -r/4.0, 0.0), panda.vec3d (-u0, 0.0, 0.0), panda.vec3d ())
 
 Next, we make the world and add the spheres
 
     bi = panda.interactor (0.4, 0.7) # arguments are coefficient of friction, coefficient of restitution
-    cell_size = panda.vec3d (3.0*r, 3.0*r, 3.0*r) # vec3d is part of an optimized vector library
+    cell_size = panda.vec3d (3.0*r, 3.0*r, 3.0*r) # arguments are the grid box sizes in eac dimension
     dt = 0.01*r/u0
     w = panda.world (cell_size, bi, dt)
     w.add_sphere (s1)
