@@ -1,6 +1,6 @@
 # panda: scientifically accurate rigid body simulations
 
-Panda is a very computationally lean sphere physics engine in 3D written in C++ and bound to Python. The method has been validated against multiple granular flow experiments and continuum simulations, and has been shown to be scientifically accurate. Also, this implementation not only utilizes of low computational complexity at every turn, but it has also been extensively profiled to remove multiple performance bottlenecks.
+Panda is a computationally lean and scientifically vetted 3D sphere physics engine written in C++ and bound to Python. The method has been validated against multiple granular flow experiments and continuum models. Also, this implementation not only utilizes of low computational complexity at every turn, but it has also been extensively profiled to remove multiple performance bottlenecks.
 
 Dependencies: [Boost](http://www.boost.org/) development libraries
 
