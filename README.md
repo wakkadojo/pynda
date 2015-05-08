@@ -1,11 +1,11 @@
-## panda: scientifically accurate rigid body simulations
+# panda: scientifically accurate rigid body simulations
 
 Panda is a very computationally lean sphere physics engine in 3D written in C++ and bound to Python. The method has been validated against multiple granular flow experiments and continuum simulations, and has been shown to be scientifically accurate. Also, this implementation not only utilizes of low computational complexity at every turn, but it has also been extensively profiled to remove multiple performance bottlenecks.
 
 Dependencies: [Boost](http://www.boost.org/) development libraries
 Last README update: 5/8/2015 (some functionaly may have changed)
 
-### Basic simulation setup
+## Basic simulation setup
 
 A simulation is conducted inside of a "world" object. A world is a 3D space from -0.5 to 0.5 in all dimensions. Each world depends on 3 things:
 
@@ -15,7 +15,7 @@ A simulation is conducted inside of a "world" object. A world is a 3D space from
 
 Simulations can easily be made 2-dimensional by placing all spheres in a plane, and significant memory can be saved by not resolving the grid perpendicular to that plane.
 
-### Controlling from python
+## Controlling from python
 
 Here we show how to load the simulation, and how to set up a basic simulation. For more complex examples, please browse the test_run directory and other source code, or email the author.
 
@@ -59,18 +59,18 @@ Now we can run it and see where the spheres are going!
             print ('Sphere ' + str (i+1) + ': ' + str (s.x[0]) + ' ' + str (s.x[1]) + ' ' + str (x[2]))
         print ()
 
-### Controlling from C++
+## Controlling from C++
 Largely the same as python, but have access to a few extra functions that haven't been wrapped
 
-### Complete python reference list
+## Complete python reference list
 Coming soon
 
-### Furture features
+## Furture features
 * Stress tensor measurements
 * Scalable parallel simulations
 * Continuous forces and custom sphere interactions
 * (less likely) Sphere bundles and different shapes
 
-### References
+## References
 1. [N. Guttenberg, Phys. Rev. E **83** (2011)](http://journals.aps.org/pre/abstract/10.1103/PhysRevE.83.051306)
 2. [J. Ellowitz, H. Turlier, N. Guttenberg, W. W. Zhang, S. R. Nagel, Phys. Rev. Lett. **111** (2013)](http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.111.168001)
