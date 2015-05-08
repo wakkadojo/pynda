@@ -42,7 +42,7 @@ First, lets make some spheres
     s1 = panda.sphere (r, m, I, panda.vec3d (-0.25,  r/4.0, 0.0), panda.vec3d ( u0, 0.0, 0.0), panda.vec3d ())
     s2 = panda.sphere (r, m, I, panda.vec3d ( 0.25, -r/4.0, 0.0), panda.vec3d (-u0, 0.0, 0.0), panda.vec3d ())
 
-Now, we make the world and add the spheres
+Next, we make the world and add the spheres
 
     bi = panda.interactor (0.4, 0.7) # arguments are coefficient of friction, coefficient of restitution
     cell_size = panda.vec3d (3.0*r, 3.0*r, 3.0*r)
@@ -51,7 +51,7 @@ Now, we make the world and add the spheres
     w.add_sphere (s1)
     w.add_sphere (s2)
 
-Now we can run it and see where the spheres are going!
+Finally we can run it and see where the spheres are going!
 
     for _ in range (50):
         w.step (100)
