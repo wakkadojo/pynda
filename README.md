@@ -18,7 +18,7 @@ Simulations can easily be made 2-dimensional by placing all spheres in a plane, 
 
 ## Controlling from python
 
-Here we show how to load the simulation, and how to set up a basic simulation. For more complex examples, please browse the test_run directory and other source code, or email the author.
+Here we show how to load the simulation, and how to set up a basic simulation. For more complex examples, please browse the test_run directory and other source code, or send me an email.
 
 #### Importing the simulation
 
