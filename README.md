@@ -117,7 +117,7 @@ Largely the same as python, but have access to a few extra functions that haven'
 * Stress tensor measurements
 * Scalable parallel simulations
 * Continuous forces and custom sphere interactions
-* (less likely) Sphere bundles and different shapes
+* (less likely) Sphere bundles and custom shapes
 
 ## References
 1. [N. Guttenberg, Phys. Rev. E **83** (2011)](http://journals.aps.org/pre/abstract/10.1103/PhysRevE.83.051306)
