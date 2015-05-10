@@ -61,11 +61,57 @@ Finally we can run it and see where the spheres are going!
             print ('Sphere ' + str (i+1) + ': ' + str (s.x[0]) + ' ' + str (s.x[1]) + ' ' + str (x[2]))
         print ()
 
+## Complete python reference list
+
+    world
+        .__init__ () # default constructor
+        .__init__ (vec3d cell_size, interactor body_interactor, double timestep)
+        .save (filename) # save the simulation state to "filename"
+        .load (filename) # load simulation state from "filename"
+        .add_sphere (sphere s) # add a sphere to the world
+        .num_spheres () # return the number of spheres in world (integer)
+        .get_spphere (int index) # return sphere number index to python
+        .add_brick (brick b) # add a brick to the world
+        .num_brigs () # return the number of bricks in world (integer)
+        .get_brick (int index) # return brick number index to python
+        .step () # execute a single timestep
+        .step (int n) # execute n timesteps
+        
+    vec3d
+        .__init__ () # default constructor: (0, 0, 0)
+        .__init__ (int x, int y, int z) # initialize vector as (x, y, z)
+        .__getitem__ (int i) # get item i by calling a = v[i]
+        .__setitem__ (int i) # set item i by calling v[i] = a
+        
+    interactor
+        .__init__ () # default constructor with friction 0.2 and restitution 0.9
+        .__init__ (float mu, float cor) # body interactor with friction mu and restitution cor
+        
+    brick
+        .__init__ () # default constructor
+        .__init__ (vec3d x, vec3d L) # place a brick (cuboid) at x with side lengths L
+        .x # vec3d: the brick's position
+        .L # vec3d: the brick's side lengths
+        
+    sphere
+        .__init__ () # default constructor
+        # radius, mass, moment of inertia, position, velocity, and angular velocity
+        .__init__ (float r, float m, float I, vec3d x, vec3d v, vec3d w) 
+        .r # float: sphere radius
+        .m # float: sphere mass
+        .I # float: sphere moment of inertia
+        .x # vec3d: sphere position
+        .v # vec3d: sphere velocity
+        .w # vec3d: sphere angular velocity (spin rate)
+        .flag # sphere state: see below
+        # Below sphere state enum is static
+        .state
+            .moving # sphere is moving, interacts with other bodies normally
+            .fixed # sphere is fixed, can affect other bodies but can't be affected by other bodies
+            .kill # sphere is marked for deletion
+
 ## Controlling from C++
 Largely the same as python, but have access to a few extra functions that haven't been wrapped
-
-## Complete python reference list
-Coming soon
 
 ## Furture features
 * Stress tensor measurements
