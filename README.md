@@ -2,7 +2,7 @@
 
 Panda is a computationally lean and scientifically vetted 3D sphere physics engine written in C++ and bound to Python. The method has been validated against multiple granular flow experiments and continuum models, and is particularly efficient at high number density (high packing fraction). Also, this implementation not only utilizes of low computational complexity at every turn, but it has also been extensively profiled to remove multiple performance bottlenecks.
 
-Dependencies: [Boost](http://www.boost.org/) development libraries
+Dependencies: [Boost](http://www.boost.org/) development libraries, Python 3 (for pynda)
 
 Last README update: 5/8/2015 (some functionaly may have changed)
 
@@ -16,9 +16,9 @@ A simulation is conducted inside of a "world" object. A world is a 3D space from
 
 Simulations can easily be made 2-dimensional by placing all spheres in a plane, and significant memory can be saved by not resolving the grid perpendicular to that plane.
 
-## Controlling from python
+## Controlling from python: pynda
 
-Here we show how to load the simulation, and how to set up a basic simulation. For more complex examples, please browse the test_run directory and other source code, or send me an email.
+Here we show how to load the simulation, and how to set up a basic simulation in the python binding **pynda**. For more complex examples, please browse the test_run directory and other source code, or send me an email. 
 
 #### Importing the simulation
 
@@ -26,7 +26,7 @@ The code currently compiles to the working source directory and does not install
 
     import sys
     sys.append ('/path/to/pywrap') # add the pywrap directory to python's library search path
-    import panda
+    import pynda
 
 Now you have it! Note: there are separate paths for Python 2 (pywrap2) and Python 3 (pywrap).
 
@@ -40,15 +40,15 @@ First, lets make some spheres
     u0 = 1.0          # initial speed
     # sphere arguments: r, m, I, position, velocity, angular velocity
     # vec3d is part of an optimized vector library
-    s1 = panda.sphere (r, m, I, panda.vec3d (-0.25,  r/4.0, 0.0), panda.vec3d ( u0, 0.0, 0.0), panda.vec3d ())
-    s2 = panda.sphere (r, m, I, panda.vec3d ( 0.25, -r/4.0, 0.0), panda.vec3d (-u0, 0.0, 0.0), panda.vec3d ())
+    s1 = pynda.sphere (r, m, I, pynda.vec3d (-0.25,  r/4.0, 0.0), pynda.vec3d ( u0, 0.0, 0.0), pynda.vec3d ())
+    s2 = pynda.sphere (r, m, I, pynda.vec3d ( 0.25, -r/4.0, 0.0), pynda.vec3d (-u0, 0.0, 0.0), pynda.vec3d ())
 
 Next, we make the world and add the spheres
 
-    bi = panda.interactor (0.4, 0.7) # arguments are coefficient of friction, coefficient of restitution
-    cell_size = panda.vec3d (3.0*r, 3.0*r, 3.0*r) # arguments are the grid box sizes in eac dimension
+    bi = pynda.interactor (0.4, 0.7) # arguments are coefficient of friction, coefficient of restitution
+    cell_size = pynda.vec3d (3.0*r, 3.0*r, 3.0*r) # arguments are the grid box sizes in eac dimension
     dt = 0.01*r/u0
-    w = panda.world (cell_size, bi, dt)
+    w = pynda.world (cell_size, bi, dt)
     w.add_sphere (s1)
     w.add_sphere (s2)
 
