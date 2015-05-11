@@ -56,3 +56,5 @@ for i in range (500):
         cv2.rectangle (img, (x1, y1), (x2, y2), (0, 0, 0), -1, cv2.CV_AA)
                         
     cv2.imwrite ('images/' + str (i).zfill (5) + '.png', img)
+    w.save ('states/' + str (i) + '.bin')
+    w.load ('states/' + str (i) + '.bin')

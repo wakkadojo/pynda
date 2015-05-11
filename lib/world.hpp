@@ -17,10 +17,12 @@
 class world
 {
     // should choose timestep according to dt <= R/(100*U), and grid L ~ 2R
+    // should choose grid length l according to l >= 3 R_grain
 
     friend class boost::serialization::access;
     template <class Archive> void serialize (Archive & ar, unsigned int version)
     {
+        // NOTE: if this is changed, the load function needs to be updated
         ar & spheres;
         ar & bricks;
         ar & bi;

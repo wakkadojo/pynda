@@ -2,7 +2,7 @@
 
 world::world () 
 {
-    c = { 6, 6, 6 };
+    c = { 1, 1, 1 };
     t = 0;
     dt = 0.001; // RG/(100 U0)
     g = grid (c, min_box, max_box);
@@ -30,11 +30,27 @@ void world::save (std::string filename)
 
 void world::load (std::string filename)
 {
+    // serialize loading directly to this* was causing vector appending
+    // workaround: load into temporary world object first
+    world w;
     std::ifstream is (filename);
     boost::archive::binary_iarchive ia (is);
-    ia >> *this;
+    ia & w;
+    // copy what w had
+    spheres = std::move (w.spheres);
+    bricks = std::move (w.bricks);
+    bi = w.bi;
+    c = w.c;
+    min_box = w.min_box;
+    max_box = w.max_box;
+    t = w.t;
+    dt = w.dt;
+    // clean up any spheres that might have left the world so grid doesn't get wonky
+    update_flags ();
+    clean ();
     // regenerate grid
-    g.complete_refresh (spheres); 
+    g = grid (c, min_box, max_box);
+    g.complete_refresh (spheres);
 }
 
 void world::update_flags () 
@@ -96,17 +112,16 @@ brick world::get_brick (unsigned int i)
 
 void world::step () 
 {
-    // Sphere removal naturally should be done when the grid gets updated
-
     // update sphere flags
     update_flags ();
     // clean up and remove rogue spheres
     clean (); 
 
+    // update grid positions
     for (unsigned int i=0; i<spheres.size (); ++i)
         g.update (spheres[i], i);
 
-    // Sphere interactions, TODO: continuous forces
+    // Sphere interactions
     for (unsigned int i=0; i<spheres.size (); ++i)
         for (unsigned int j : g.get_neighbors (i))
             if (i < j)

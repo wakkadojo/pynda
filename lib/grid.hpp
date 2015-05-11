@@ -25,7 +25,7 @@ class grid
     std::vector<double> min_box = { -0.5, -0.5, -0.5 };
     std::vector<double> max_box = {  0.5,  0.5,  0.5 };
     // number of cells in each dimension
-    std::vector<unsigned int> c;
+    std::vector<unsigned int> c = { 1, 1, 1 };
     private:
         // find the cell number of the given sphere
         unsigned int get_sphere_cell (const sphere &);

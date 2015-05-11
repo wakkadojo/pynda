@@ -119,7 +119,7 @@ void grid::complete_refresh (const std::vector<sphere> & spheres) {
 
     sphere_cells = std::vector<unsigned int> (spheres.size ());
     cells = std::vector<std::vector<unsigned int>> (n_cells);
-    neighbors = std::vector<std::vector<unsigned int>> ();
+    neighbors = std::vector<std::vector<unsigned int>> (spheres.size ());
 
     // iterate through all spheres and place them on the cell grid
     for (unsigned int i=0; i<spheres.size (); ++i)
