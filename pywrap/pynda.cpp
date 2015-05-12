@@ -6,7 +6,7 @@
 
 using namespace boost::python;
 
-BOOST_PYTHON_MODULE (panda)
+BOOST_PYTHON_MODULE (pynda)
 {
     // for function overloading
     void (world::*step1) (void) = &world::step;
