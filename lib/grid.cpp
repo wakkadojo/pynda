@@ -151,10 +151,7 @@ void grid::set_search_cells () {
     {
         // --------------------
         // make a list of all adjacent cells
-        // For now just hardcode d = 2/3 in with many nested for loops. There
-        // should be a recursive algorithm that finds 3 cells and calls 3 more
-        // of itself etc to generate the cell list. But perhaps implement this
-        // after the simulation is up and working.
+        // For now just hardcode d = 2/3 in with many nested for loops, since it's the simplest implementation
         unsigned int center_cells [3] = {0, 0, 0}; // index of center cell in 3d
         unsigned int mult = 1;
         for (unsigned int j=0; j<c.size (); ++j)
