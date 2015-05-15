@@ -1,0 +1,9 @@
+* Bullet-proof loading state
+    * Are all vectors duplicating?
+    * Instead of new world, clear all vectors then load?
+* Parallelize
+    * Step function with given spheres input
+    * Recursive tree to generate sphere update domains
+    * Thread dispatching
+        * Thread objects pause, have accessible memory for sphere list updates
+    * Memory sorting in both spheres and neighbors in grid
