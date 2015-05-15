@@ -4,7 +4,7 @@ Panda is a computationally lean and scientifically vetted 3D sphere physics engi
 
 Dependencies: [Boost](http://www.boost.org/) development libraries, Python 3 (for pynda)
 
-Last README update: 5/8/2015 (some functionaly may have changed)
+Last README update: 5/15/2015 (some functionaly may have changed)
 
 ## Basic simulation setup
 
@@ -28,7 +28,7 @@ The code currently compiles to the working source directory and does not install
     sys.append ('/path/to/pywrap') # add the pywrap directory to python's library search path
     import pynda
 
-Now you have it! Note: there are separate paths for Python 2 (pywrap2) and Python 3 (pywrap).
+Now you have it! Note: depending on your system, pynda will either be python2 or python3 bound, so some usage syntax may vary slightly.
 
 #### A simple simulation: colliding two spheres
 Once you have the simulation loaded, you need to create a world object, create some spheres, and let it run.
@@ -37,6 +37,7 @@ First, lets make some spheres
 
     r = 0.05          # sphere radius
     m = 4*pi*r**3/3.0 # sphere mass
+    I = 0.4*m*r**2    # sphere moment of inertia
     u0 = 1.0          # initial speed
     # sphere arguments: r, m, I, position, velocity, angular velocity
     # vec3d is part of an optimized vector library
