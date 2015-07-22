@@ -15,13 +15,14 @@ struct sphere
     template <class Archive> void serialize (Archive & ar, unsigned int version)
     {
         ar & m & r & I;
-        ar & x & v & q & w;
+        ar & x0 & x & v & q & w;
         ar & flag;
     }
     enum class state { moving, fixed, kill };
     double m;          // mass
     double r;          // radius
     double I;          // moment of inertia
+    vec3d x0;          // sphere initial position
     vec3d x;           // sphere position
     vec3d v;           // sphere velocity
     vec3d q;           // orientation

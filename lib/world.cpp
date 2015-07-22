@@ -77,6 +77,7 @@ void world::clean ()
 
 void world::add_sphere (sphere s) 
 { 
+    s.x0 = s.x; // save the position
     g.add (s, spheres.size ());
     spheres.push_back (s); 
 }
