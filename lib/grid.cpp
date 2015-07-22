@@ -106,7 +106,7 @@ unsigned int grid::get_sphere_cell (const sphere & s)
     for (unsigned int i=0; i<c.size (); ++i)
     {
         vec3d x = s.x; // so can use non-const ref
-        if (x[i] < min_box[i] or x[i] > max_box[i])
+        if (x[i] < min_box[i] - constants::eps or x[i] > max_box[i] + constants::eps)
             throw std::out_of_range ("sphere position is outside box");
         cell += (unsigned int) ((x[i] - min_box[i])*c[i]/(max_box[i]-min_box[i]))*mult;
         mult *= c[i];
