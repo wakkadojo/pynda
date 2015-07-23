@@ -4,7 +4,7 @@ Panda is a computationally lean and scientifically vetted 3D sphere physics engi
 
 Dependencies: [Boost](http://www.boost.org/) development libraries, Python (versions 2 or 3, for pynda)
 
-Last README update: 5/15/2015 (some functionaly may have changed)
+Last README update: 7/23/2015 (some functionaly may have changed)
 
 ## Building the simulation
 
