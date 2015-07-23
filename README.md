@@ -98,12 +98,13 @@ Finally we can run it and see where the spheres are going!
         .__init__ () # default constructor
         # radius, mass, moment of inertia, position, velocity, and angular velocity
         .__init__ (float r, float m, float I, vec3d x, vec3d v, vec3d w) 
-        .r # float: sphere radius
-        .m # float: sphere mass
-        .I # float: sphere moment of inertia
-        .x # vec3d: sphere position
-        .v # vec3d: sphere velocity
-        .w # vec3d: sphere angular velocity (spin rate)
+        .r  # float: sphere radius
+        .m  # float: sphere mass
+        .I  # float: sphere moment of inertia
+        .x  # vec3d: sphere position
+        .x0 # vec3d: initial sphere position
+        .v  # vec3d: sphere velocity
+        .w  # vec3d: sphere angular velocity (spin rate)
         .flag # sphere state: see below
         # Below sphere state enum is static
         .state
