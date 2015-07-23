@@ -2,9 +2,13 @@
 
 Panda is a computationally lean and scientifically vetted 3D sphere physics engine written in C++ and bound to Python. The method has been validated against multiple granular flow experiments and continuum models, and is particularly efficient at high number density (high packing fraction). Also, this implementation not only utilizes of low computational complexity at every turn, but it has also been extensively profiled to remove multiple performance bottlenecks.
 
-Dependencies: [Boost](http://www.boost.org/) development libraries, Python 3 (for pynda)
+Dependencies: [Boost](http://www.boost.org/) development libraries, Python (versions 2 or 3, for pynda)
 
 Last README update: 5/15/2015 (some functionaly may have changed)
+
+## Building the simulation
+
+We use cmake to compile and link. The simplest way to compile the simulation is to create a build directory and run cmake /path/to/source/CMakeLists.txt, then run make.
 
 ## Basic simulation setup
 
