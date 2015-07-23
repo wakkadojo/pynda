@@ -36,7 +36,7 @@ void grid::add (const sphere & s, const unsigned int index)
     sphere_cells.push_back (cell);
     // now go through the cells to construct the neighbor list
     neighbors.push_back (std::vector<unsigned int> ());
-    neighbors.reserve (neighbor_reserve);
+    // neighbors.reserve (neighbor_reserve); JEE 7/13/2015 not sure why this was here, probably a mistake
     for (const unsigned int & adj_cell : search_cells[cell])
         for (const unsigned int & neighbor : cells[adj_cell])
         {
