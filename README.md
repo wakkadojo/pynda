@@ -73,7 +73,7 @@ Finally we can run it and see where the spheres are going!
         .load (filename) # load simulation state from "filename"
         .add_sphere (sphere s) # add a sphere to the world
         .num_spheres () # return the number of spheres in world (integer)
-        .get_spphere (int index) # return sphere number index to python
+        .get_sphere (int index) # return sphere number index to python
         .add_brick (brick b) # add a brick to the world
         .num_brigs () # return the number of bricks in world (integer)
         .get_brick (int index) # return brick number index to python
