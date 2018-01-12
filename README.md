@@ -4,8 +4,6 @@ Pynda is a computationally lean and scientifically vetted 3D sphere physics engi
 
 Dependencies: [Boost](http://www.boost.org/) development libraries, Python (versions 2 or 3, for pynda)
 
-Last README update: 7/23/2015 (some functionaly may have changed)
-
 ## Building the simulation
 
 We use cmake to compile and link. The simplest way to compile the simulation is to create a build directory and run cmake /path/to/source/CMakeLists.txt, then run make.
