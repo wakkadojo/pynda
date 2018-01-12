@@ -1,6 +1,6 @@
-# panda: scientifically accurate rigid body simulations
+# pynda: scientifically accurate rigid body simulations
 
-Panda is a computationally lean and scientifically vetted 3D sphere physics engine written in C++ and bound to Python. The method has been validated against multiple granular flow experiments and continuum models, and is particularly efficient at high number density (high packing fraction). This implementation is O(n) complexity with a prefactor dependent on grid size choice, and has also been extensively profiled to remove multiple performance bottlenecks.
+Pynda is a computationally lean and scientifically vetted 3D sphere physics engine written in C++ and bound to Python. The method has been validated against multiple granular flow experiments and continuum models, and is particularly efficient at high number density (high packing fraction). This implementation is O(n) complexity with a prefactor dependent on grid size choice, and has also been extensively profiled to remove multiple performance bottlenecks.
 
 Dependencies: [Boost](http://www.boost.org/) development libraries, Python (versions 2 or 3, for pynda)
 
